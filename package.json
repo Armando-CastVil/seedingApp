@@ -1,0 +1,27 @@
+{
+  "name": "seeding-demo",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "axios": "^0.27.2",
+    "firebase": "^9.8.2",
+    "next": "12.1.6",
+    "react-dom": "^18.1.0",
+    "react-promise": "^3.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "17.0.35",
+    "@types/react": "18.0.9",
+    "@types/react-dom": "18.0.5",
+    "eslint": "8.16.0",
+    "eslint-config-next": "12.1.6",
+    "eslint-plugin-react-hooks": "^4.5.0",
+    "typescript": "4.7.2"
+  }
+}
