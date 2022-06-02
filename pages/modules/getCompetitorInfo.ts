@@ -6,11 +6,11 @@ import setRating from "./setRating"
 import sortByRating from "./sortByRating"
 
 
-export default async function getCompetitorInfo()
+export default async function getCompetitorInfo(url:string)
 {
     
     
-    const playerData: any= await getData()
+    const playerData: any= await getData(url)
     const entryList= await getTagsandIDs(playerData)
     //everything works until here
     const ratedList=await setRating(entryList)
