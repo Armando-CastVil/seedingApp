@@ -45,6 +45,7 @@ const Home: NextPage = () => {
 
       <main className={styles.main}>
 
+      <URLForm/>
       {<button id="button" type="submit" onClick={handleSubmit}>Submit event</button>}
       <div>
         <ol>

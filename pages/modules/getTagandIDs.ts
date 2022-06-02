@@ -8,7 +8,6 @@ export default function getTagsandIDs(entrantData:any):Competitor[]
        
     }
 
-
     function fillArray()
     {
         for(let i=0;i<entrantData.length;i++)
