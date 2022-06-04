@@ -4,15 +4,17 @@ import urlToSlug from "../modules/urlToSlug";
 import getCompetitorInfo from "../modules/getCompetitorInfo";
 import getList from "./getList";
 import Competitor from "../modules/Competitor";
-import displayList from "./displayList";
-export default class URLForm extends React.Component <{}, { value: string }>
+import { timeStamp } from "console";
+export default class URLForm extends React.Component <{setStateOfDisplayer: any}, { value: string }>
   {
+    list:Competitor[];
     
     
     constructor(props:any) {
       super(props);
 
       this.state = {value: ''};
+      this.list=[];
   
       this.handleChange = this.handleChange.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
@@ -30,14 +32,20 @@ export default class URLForm extends React.Component <{}, { value: string }>
     async handleSubmit(event: { preventDefault: () => void; }) {
       //send value to getlist
       event.preventDefault();
-      return (
+      this.list=await getList(this.state.value)
+      return(
         <div>
-          {displayList(await getList(this.state.value))}
-        </div>
-      );
-      
-      
-      
+        <ol>
+        
+        {this.list.map((p:any)=>(
+           
+            <li key={p.ID}>Player ID:{p.ID} Player Tag: {p.tag} Player Rating: {p.rating}</li>
+            
+        ))}
+        </ol>
+    </div>
+      )
+      //await getList(this.state.value)
     }
 
     

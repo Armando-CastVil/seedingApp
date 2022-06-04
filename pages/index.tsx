@@ -8,7 +8,7 @@ import Competitor from './modules/Competitor'
 import getCompetitorInfo from './modules/getCompetitorInfo'
 import { useState } from 'react'
 import usePromise from "react-promise";
-
+import DisplayList from './components/displayList'
 const Home: NextPage = () => {
   
 
@@ -25,7 +25,7 @@ const Home: NextPage = () => {
 
       <main className={styles.main}>
 
-      <URLForm/>
+      <DisplayList/>
       
         
       </main>

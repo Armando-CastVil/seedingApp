@@ -1,10 +1,9 @@
 import React from "react";
 import Competitor from "../modules/Competitor";
 import URLForm from "./URLForm";
-export default class displayList extends React.Component
+export default class DisplayList extends React.Component
 {
     
-
     constructor(props:any) {
         super(props);
         this.setStateOfDisplayer.bind(this);
@@ -15,8 +14,11 @@ export default class displayList extends React.Component
       }
     render() {
         return (
-           // <URLForm setStateOfDisplayer = {this.setStateOfDisplayer}/>
-           <h1>displaylist was called</h1>
+            <div>
+                <URLForm setStateOfDisplayer={undefined}/>
+                
+            </div>
+            
         );
       }
     }
