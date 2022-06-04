@@ -26,7 +26,7 @@ slug:string
 
 // AJAX functions
 export const getEntrants = async (params: GetEntrants) => {
-  
+  console.log("this is api call with slug: "+ params.slug)
     const graphql = {
         query: `query EventEntrants($eventSlug: String, $perPage: Int!) {
             event(slug:$eventSlug) {
