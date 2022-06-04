@@ -6,11 +6,11 @@ import setRating from "./setRating"
 import sortByRating from "./sortByRating"
 
 
-export default async function getCompetitorInfo(url:string)
+export default async function getCompetitorInfo(slug:string)
 {
     
-    
-    const playerData: any= await getData(url)
+    console.log("getcompetitor info was called with slug "+slug)
+    const playerData: any= await getData(slug)
     const entryList= await getTagsandIDs(playerData)
     //everything works until here
     const ratedList=await setRating(entryList)

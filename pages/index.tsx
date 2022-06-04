@@ -10,27 +10,7 @@ import { useState } from 'react'
 import usePromise from "react-promise";
 
 const Home: NextPage = () => {
-  var entryList: Competitor[]=[];
-  const [entries, setEntries] = useState(entryList);
-  const [isLoading, setLoading] = useState(false);
   
-  
-  //API call
-  const handleSubmit = async () => {
-    setEntries(await getCompetitorInfo())
-
-
-    if(entries.length==0)
-    {
-      return <div className="App">Loading...</div>;
-    }
-  
-    
-    
-  }
-
-
-
 
 
  
@@ -46,15 +26,7 @@ const Home: NextPage = () => {
       <main className={styles.main}>
 
       <URLForm/>
-      {<button id="button" type="submit" onClick={handleSubmit}>Submit event</button>}
-      <div>
-        <ol>
-        
-        {entries.map((p:any)=>(
-            <li key={p.ID}>Player ID:{p.ID} Player Tag: {p.tag} Player Rating: {p.rating}</li>
-        ))}
-        </ol>
-    </div>
+      
         
       </main>
 
