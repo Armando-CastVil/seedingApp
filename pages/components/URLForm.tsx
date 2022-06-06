@@ -5,19 +5,24 @@ import getCompetitorInfo from "../modules/getCompetitorInfo";
 import getList from "./getList";
 import Competitor from "../modules/Competitor";
 import { timeStamp } from "console";
-export default class URLForm extends React.Component <{setStateOfDisplayer: any}, { value: string }>
+import DisplayList from "./displayList";
+
+
+export default class URLForm extends React.Component <{}, { value: string }>
   {
-    list:Competitor[];
+    isSubmitted: boolean;
+  list: Competitor[];
+ 
     
     
     constructor(props:any) {
       super(props);
 
       this.state = {value: ''};
-      this.list=[];
-  
       this.handleChange = this.handleChange.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
+      this.isSubmitted=false;
+      this.list=[]
       
       
     }
@@ -26,32 +31,35 @@ export default class URLForm extends React.Component <{setStateOfDisplayer: any}
 
     handleChange(event: { target: { value: any; }; }) {
       this.setState({value: event.target.value});
-      
+
     }
+    
 
     async handleSubmit(event: { preventDefault: () => void; }) {
       //send value to getlist
       event.preventDefault();
-      this.list=await getList(this.state.value)
-      return(
-        <div>
-        <ol>
-        
-        {this.list.map((p:any)=>(
-           
-            <li key={p.ID}>Player ID:{p.ID} Player Tag: {p.tag} Player Rating: {p.rating}</li>
-            
-        ))}
-        </ol>
-    </div>
-      )
-      //await getList(this.state.value)
+      this.state=({value:urlToSlug(this.state.value)!})
+      await this.listFIll()
+      await this.setSubmitToTrue()
+      
+    }
+    setSubmitToTrue() {
+      this.isSubmitted=true;
     }
 
+    listFIll()
+    {
+      getList(this.state.value).then((value)=>
+      this.list=value
+      )
+      this.state=({value:""})
+    }
     
 
     render() {
+      
       return (
+        
         <div>
             <form onSubmit={this.handleSubmit}>
           <label>
@@ -61,11 +69,18 @@ export default class URLForm extends React.Component <{setStateOfDisplayer: any}
           </label>
           <input type="submit" value="Submit" />
         </form>
+        {this.isSubmitted?
+         <DisplayList url={this.state.value} list={this.list}></DisplayList>
          
+         :<h3>loading</h3>
+        }
+        
         </div>
       
       );
     }
 
   }
+
+
   

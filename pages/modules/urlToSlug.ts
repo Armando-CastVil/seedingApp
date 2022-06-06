@@ -12,7 +12,11 @@ export default function urlToSlug(url:string)
     }
   else
     {
-      slug=url.substring(9,url.length)
+      if(url.charAt(0)=='s')
+      {
+        slug=url.substring(9,url.length)
+      }
+      
     }
 
   //url does not have https://www.start.gg/ at this point
@@ -39,6 +43,7 @@ export default function urlToSlug(url:string)
       if(slug.charAt(i)=="/")
       {
         counter++;
+
         if (counter ==4)
         {
           slug=slug.substring(0,i)
