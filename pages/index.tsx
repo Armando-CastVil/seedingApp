@@ -4,11 +4,11 @@ import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import URLForm from './components/URLForm'
 import React  from 'react'
-import Competitor from './modules/Competitor'
-import getCompetitorInfo from './modules/getCompetitorInfo'
-import { useState } from 'react'
-import usePromise from "react-promise";
-import DisplayList from './components/displayList'
+import GetListFromURL from './components/GetListFromURL'
+
+
+
+
 const Home: NextPage = () => {
   
 
@@ -25,9 +25,8 @@ const Home: NextPage = () => {
 
       <main className={styles.main}>
 
-      <URLForm/>
       
-        
+      <GetListFromURL/>
       </main>
 
       <footer className={styles.footer}>
