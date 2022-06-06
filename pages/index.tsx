@@ -25,7 +25,7 @@ const Home: NextPage = () => {
 
       <main className={styles.main}>
 
-      <DisplayList/>
+      <URLForm/>
       
         
       </main>
