@@ -56,7 +56,7 @@ export const getEntrants = async (params: GetEntrants) => {
         variables: {
             
             "eventSlug":params.slug,
-             "perPage": 300
+             "perPage": 500
         }
     }
     
