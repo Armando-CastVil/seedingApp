@@ -5,15 +5,11 @@ import styles from '../styles/Home.module.css'
 import URLForm from './components/URLForm'
 import React  from 'react'
 import GetListFromURL from './components/GetListFromURL'
-import { DoubleElimination } from './components/ViewBracket'
 
 
 
 const Home: NextPage = () => {
   
-
-
- 
   return (
    
     <div className={styles.container}>
@@ -27,7 +23,7 @@ const Home: NextPage = () => {
 
       
       <GetListFromURL/>
-      <DoubleElimination/>
+     
       
       </main>
 
