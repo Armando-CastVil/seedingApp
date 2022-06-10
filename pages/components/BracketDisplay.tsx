@@ -5,6 +5,7 @@ export default function BracketDisplay()
 {
     return(
     
+    
     <DoubleEliminationBracket
         matches={dummymatches}
         matchComponent={Match}
