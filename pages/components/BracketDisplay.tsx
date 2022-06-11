@@ -3,14 +3,25 @@ import { SingleEliminationBracket, DoubleEliminationBracket, Match, SVGViewer } 
 import { dummymatches } from "./dummymatches";
 export default function BracketDisplay()
 {
+
+    const handleClick= (event: { preventDefault: () => void; })  => {
+        event.preventDefault();
+        
+    }
     return(
     
-    
-    <DoubleEliminationBracket
+        <div>
+<button onClick={e => { handleClick(e) }}></button>
+        <DoubleEliminationBracket
         matches={dummymatches}
         matchComponent={Match}
      
-    />)
+    />
+        </div>
+        
+        
+  
+   )
 
 }
 
