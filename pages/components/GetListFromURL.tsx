@@ -1,7 +1,8 @@
 import React,{useState} from "react";
 import urlToSlug from "../modules/urlToSlug";
-import getList from "./getList";
+import getList from "../modules/getList";
 import Competitor from "../modules/Competitor";
+import fillByes from "../modules/fillByes";
 export default function GetListFromURL()
 {
     const [url,setURL] = useState("placeholder");
@@ -17,6 +18,10 @@ export default function GetListFromURL()
         setSubmitStatus(true)
     }
 
+    
+
+    
+
     return (
         <div>
           {submitStatus?
@@ -24,7 +29,8 @@ export default function GetListFromURL()
             <h3>loading...</h3>
             :list.map((e:Competitor)=>
             <>
-            <div>
+            {  fillByes(list)}
+            <div key={e.ID.toString()}>
                 <h3>ID: {e.ID}</h3>
                 <h3>Tag: {e.tag}</h3>
                 <h3>Rating: {e.rating}</h3>
