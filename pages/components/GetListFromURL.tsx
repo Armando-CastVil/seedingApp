@@ -29,11 +29,9 @@ export default function GetListFromURL()
             <h3>loading...</h3>
             :list.map((e:Competitor)=>
             <>
-            {  fillByes(list)}
             <div key={e.ID.toString()}>
-                <h3>ID: {e.ID}</h3>
                 <h3>Tag: {e.tag}</h3>
-                <h3>Rating: {e.rating}</h3>
+                <h3>Rating: {e.rating.toFixed(2)}</h3>
             </div>
             <br></br>
             </>

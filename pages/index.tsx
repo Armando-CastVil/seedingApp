@@ -5,10 +5,12 @@ import styles from '../styles/Home.module.css'
 import URLForm from './components/URLForm'
 import React  from 'react'
 import GetListFromURL from './components/GetListFromURL'
+import { dummymatches } from './components/dummymatches'
 
 
 
 const Home: NextPage = () => {
+  console.log(dummymatches.upper[0])
   
   return (
    
@@ -23,6 +25,7 @@ const Home: NextPage = () => {
 
       
       <GetListFromURL/>
+      
      
       
       </main>
