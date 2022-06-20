@@ -11,6 +11,9 @@ export default function fillByes(list:Competitor[])
         powerOfTwo=Math.pow(2,counter)
     }
    
-    console.log("power of two is:"+ powerOfTwo)
-    return powerOfTwo
+    while(list.length<powerOfTwo)
+    {
+        list.push(new Competitor("noID","bye",-1))
+    }
+    return list;
 }
