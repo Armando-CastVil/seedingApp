@@ -13,7 +13,7 @@ export default function fillByes(list:Competitor[])
    
     while(list.length<powerOfTwo)
     {
-        list.push(new Competitor("noID","bye",-1))
+        list.push(new Competitor("0","Bye",-1))
     }
     return list;
 }
