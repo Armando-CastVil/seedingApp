@@ -5,6 +5,7 @@ import getBracketData from "../modules/getBracketData";
 import Competitor from "../modules/Competitor";
 import getRating from "../modules/getRating";
 import setRating from "../modules/setRating";
+import generateMatches from "../modules/generateMatches";
 export default function BracketDisplay()
 {
     const [bracketData,setBracketData]=useState<any>();
@@ -23,12 +24,7 @@ export default function BracketDisplay()
     
     if(submitStatus&&bracketData!=undefined)
     {
-        setPlayerInfo(bracketData).then((value)=>
-        {
-            playerList=value
-            console.log(playerList.length)
-        })
-
+        generateMatches(bracketData)
         
     }
     
@@ -41,36 +37,5 @@ export default function BracketDisplay()
 
 }
 
-async function setPlayerInfo(data:any)
-{
-    var playerList:Competitor[]=[];
-    var ID="";
-    var tag="";
-    var rating=0;
-    var bracketID=0;
 
-    for(let i=0;i<data.event.phaseGroups[0].seeds.nodes.length;i++)
-    {
-
-        bracketID=data.event.phaseGroups[0].seeds.nodes[i].id
-        ID=data.event.phaseGroups[0].seeds.nodes[i].players[0].id
-        tag=data.event.phaseGroups[0].seeds.nodes[i].players[0].gamerTag
-        getRating(ID).then((value:number)=>
-        {
-            rating=value
-        })
-
-        
-        let  entry= new Competitor(ID,tag,rating,bracketID)
-        playerList[i]=entry;
-    }
-
-   await setRating(playerList).then((value)=>{
-       playerList=value
-    })
-    return playerList
-
-    
-}
-
-//console.log(`tag is ${entry.tag} regular id is ${entry.ID} ranking is ${entry.rating} and bracketid is ${entry.bracketID}`)
+  
