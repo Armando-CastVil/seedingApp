@@ -6,11 +6,12 @@ import URLForm from './components/URLForm'
 import React  from 'react'
 import GetListFromURL from './components/GetListFromURL'
 import { dummymatches } from './components/dummymatches'
+import BracketDisplay from './components/BracketDisplay'
 
 
 
 const Home: NextPage = () => {
-  console.log(dummymatches.upper[0])
+  
   
   return (
    
@@ -24,7 +25,7 @@ const Home: NextPage = () => {
       <main className={styles.main}>
 
       
-      <GetListFromURL/>
+      <BracketDisplay/>
       
      
       

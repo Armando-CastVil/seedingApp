@@ -1,6 +1,6 @@
-import urlToSlug from "../modules/urlToSlug";
-import getCompetitorInfo from "../modules/getCompetitorInfo";
-import Competitor from "../modules/Competitor";
+import urlToSlug from "./urlToSlug";
+import getCompetitorInfo from "./getCompetitorInfo";
+import Competitor from "./Competitor";
 import { useState } from "react";
 export  default async function getList(slug:string)
 {

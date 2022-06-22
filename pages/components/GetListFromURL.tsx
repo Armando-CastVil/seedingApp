@@ -2,7 +2,6 @@ import React,{useState} from "react";
 import urlToSlug from "../modules/urlToSlug";
 import getList from "../modules/getList";
 import Competitor from "../modules/Competitor";
-import fillByes from "../modules/fillByes";
 export default function GetListFromURL()
 {
     const [url,setURL] = useState("placeholder");

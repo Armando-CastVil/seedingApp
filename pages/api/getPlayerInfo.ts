@@ -11,7 +11,8 @@ type Data = {
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<any>
-) {
+) 
+{
         const slug = req.query.slug as string
         const params={slug}
         const entrants = await getEntrants(params)

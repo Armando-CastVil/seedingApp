@@ -39,6 +39,10 @@ export const getEntrants = async (params: GetEntrants) => {
                   page: $seedsPage
                 }) {
                   nodes {
+                    players {
+                      id
+                      gamerTag
+                    }
                     id
                     progressionSource {
                       id
@@ -61,13 +65,6 @@ export const getEntrants = async (params: GetEntrants) => {
                       prereqType
                       seed {
                         id
-                      }
-                      entrant {
-                        participants {
-                          player {
-                            id
-                          }
-                        }
                       }
                     }
                   }

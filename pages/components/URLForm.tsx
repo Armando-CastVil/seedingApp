@@ -2,10 +2,10 @@ import React from "react";
 import getTourneyEntrants from "../getTourneyEntrants";
 import urlToSlug from "../modules/urlToSlug";
 import getCompetitorInfo from "../modules/getCompetitorInfo";
-import getList from "./getList";
+import getList from "../modules/getList";
 import Competitor from "../modules/Competitor";
 import { timeStamp } from "console";
-import DisplayList from "./displayList";
+import DisplayList from "./DisplayList";
 
 
 export default class URLForm extends React.Component <{}, { value: string }>
