@@ -30,24 +30,38 @@ interface Set
 
 interface MatchStructure
 {
-    upper:[]
+    upper:[],
+    lower:[]
+}
+
+var matchArray:MatchStructure=
+{
+    upper:[],
     lower:[]
 }
 
 export default function generateMatches(list:Competitor[])
 {
 
+  
+    
     var winnersBracket:Bracket=
     {
         players:list,
         round:1
     }
-  
-    var winnersBracket:Bracket=
+
+    var losersBracket:Bracket=
     {
         players:[],
         round:1
     }
+
+   
+}
+
+function processWinners(winnersArray:Competitor[])
+{
 
 
 }
