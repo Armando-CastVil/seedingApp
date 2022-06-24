@@ -1,17 +1,19 @@
 export default class Competitor
 {
-    ID: String;
+    ID: string;
     tag: string;
     rating: number;
     projectedPath:Competitor[]=[];
     bracketID:number;
+    seed:number;
     
 
-    constructor(ID:String,tag:string,rating:number,bracketID:number) {
+    constructor(ID:string,tag:string,rating:number,bracketID:number,seed:number) {
       this.ID=ID;
       this.tag=tag;
       this.rating=rating;
       this.bracketID=bracketID;
+      this.seed=seed;
     }
     setrating(newRating:number)
     {
@@ -20,6 +22,10 @@ export default class Competitor
     setBracketID(newBracketID:number)
     {
       this.bracketID=newBracketID
+    }
+    setSeed(seed:number)
+    {
+      this.seed=seed
     }
     addPlayerToPath(player:Competitor)
     {
