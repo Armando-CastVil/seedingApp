@@ -5,7 +5,6 @@ import styles from '../styles/Home.module.css'
 import URLForm from './components/URLForm'
 import React  from 'react'
 import GetListFromURL from './components/GetListFromURL'
-import { dummymatches } from './components/dummymatches'
 import BracketDisplay from './components/BracketDisplay'
 
 
