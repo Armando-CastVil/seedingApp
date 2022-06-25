@@ -1,7 +1,6 @@
 
 import { Match,Participant } from "@g-loot/react-tournament-brackets/dist/src/types";
 import Competitor from "./Competitor";
-import getRating from "./getRating";
 import setRating from "./setRating";
 import sortByRating from "./sortByRating";
 
@@ -42,13 +41,19 @@ export default async function generateMatches(data:any)
          }
     })
 
+    //Fill matches that have at minimum one player, only needs to be
+    await fillInitial(data,playerList,bracketIDs).then((value)=>
+    {
+        
+        setList= value
+    })
     
-    console.log(fillInitial(data,playerList,bracketIDs))
     
-
-
-
-
+   await generateSets(data,playerList,bracketIDs,setList).then((value)=>
+    {
+        console.log("sets from generate sets"+value.length)
+        console.log(value)
+    })
    /* generateSets(data,playerList,matchList).then((value)=>
     {
         matchList=value
@@ -62,6 +67,122 @@ export default async function generateMatches(data:any)
    
 }
 
+async function generateSets(data:any,playerList:Competitor[],bracketIDs:any[],setList:Match[])
+{
+
+    
+    //do this for the amount of rounds, i dont know the actual formula so this will do for now
+    var rounds=3*Math.ceil(Math.log2(playerList.length))+1
+    console.log("round: "+ rounds)
+    for(let r=0;r<rounds;r++)
+    {
+        
+        //find out winner and loser and push them in to their corresponding next matches
+        for(let i=0;i<setList.length;i++)
+        {
+            
+            var winner:Participant;
+            var loser:Participant;
+            //if a set has 2 participants and neither has been set as a winner, meaning match hasn't been processed
+            if(setList[i].participants.length==2 && (setList[i].participants[0].isWinner==false)&&(setList[i].participants[1].isWinner==false))
+            {
+
+                //find out the winner of the set and assign them to their corresponding variable
+                if(bracketIDs.indexOf(setList[i].participants[0].id)<bracketIDs.indexOf(setList[i].participants[1].id))
+                {  
+                    setList[i].participants[0].isWinner=true
+                    setList[i].participants[1].isWinner=false
+                    winner=setList[i].participants[0]
+                    loser=setList[i].participants[1]
+                }    
+                else
+                {
+                    setList[i].participants[0].isWinner=false
+                    setList[i].participants[1].isWinner=true
+                    winner=setList[i].participants[1]
+                    loser=setList[i].participants[0]
+                }
+                console.log("Match: "+setList[i].name)
+                console.log("winner:"+winner.name)
+                console.log("loser:"+loser.name)
+            }
+            
+        
+            //find out their corresponding matches and push them in to them
+            //find the next sets and push their corresponding participants
+            for(let j=0;j<data.phaseGroup.sets.nodes.length;j++)
+            {
+                
+                for(let k=0;k<data.phaseGroup.sets.nodes[j].slots.length;k++)
+                {
+                    
+                    //if the current set(setList[i]) is a prerequisite, then this match is the match that follows
+                    if(setList[i].id==data.phaseGroup.sets.nodes[j].slots[k].prereqId)
+                    {
+                        //the possible scenarios for a participant are: winners bracket to winners bracket, winners to losers, 
+                        //losers to losers, and losers to winners(only in case of losers finals)
+
+                        //if the current set and the next set are in winners
+                        if(data.phaseGroup.sets.nodes[i].round>0 && data.phaseGroup.sets.nodes[j].round>0)
+                        {
+                            //assign the next set as this sets next match
+                            setList[i].nextMatchId=data.phaseGroup.sets.nodes[j].id
+
+                            //push the winner in to the next set
+                            setList[j].participants.push(winner!)
+                        }
+
+                        //if the current set is in winners and the next set is in losers
+                        if(data.phaseGroup.sets.nodes[i].round>0 && data.phaseGroup.sets.nodes[j].round<0)
+                        {
+                         //assign the next set as this sets next match
+                         setList[i].nextLooserMatchId=data.phaseGroup.sets.nodes[j].id
+ 
+                         //push the loser in to the next set
+                         setList[j].participants.push(loser!)
+                     
+                        }
+                        //if the current set is in losers and the next set is in losers
+                        if(data.phaseGroup.sets.nodes[i].round<0 && data.phaseGroup.sets.nodes[j].round<0)
+                        {
+                          //assign the next set as this sets next match
+                          setList[i].nextMatchId=data.phaseGroup.sets.nodes[j].id
+  
+                          //push the loser in to the next set
+                          setList[j].participants.push(winner!)
+                        }
+
+                        //if the current set is in losers and the next set is in winners
+                        if(data.phaseGroup.sets.nodes[i].round<0 && data.phaseGroup.sets.nodes[j].round>0)
+                        {
+                          //assign the next set as this sets next match
+                          setList[i].nextMatchId=data.phaseGroup.sets.nodes[j].id
+  
+                          //push the loser in to the next set
+                          setList[j].participants.push(winner!)
+                        }
+                    }
+                }
+
+            }
+
+        
+        }
+
+    }
+    
+    return setList
+                                                
+}              
+            
+        
+   
+
+        
+     
+    
+
+
 
 //function that fills an array composed of all the competitors along with the necessary data like id,tag,rating, and bracketid
 async function setPlayerInfo(data:any)
@@ -73,160 +194,38 @@ async function setPlayerInfo(data:any)
     var bracketID=0;
 
     //obtains the attributes from the data obtained from the API call and assigns them
-    //to the corresponding variable
-   
+    //to the corresponding variable  
     for(let i=0;i<data.phaseGroup.seeds.nodes.length;i++)
     {
-
-        //obtained from api
-        
+        //obtained from api  
         ID=data.phaseGroup.seeds.nodes[i].players[0].id
         tag=data.phaseGroup.seeds.nodes[i].players[0].gamerTag
         bracketID=0;
-        
 
-        
-
-        
         //initialize a Competitor object and push it in to the array
         let  entry= new Competitor(ID,tag,0,bracketID,0)
-        //obtained from the database
-
-
         playerList[i]=entry;
     }
 
-    //assign ratings to each player
+    //assign ratings to each player obtained from the database
     const ratedList=await setRating(playerList)
     //sort by player
     playerList=sortByRating(ratedList)
    //set bracketIDs to the sorted list, the bracketID now corresponds to a seed
    for(let i=0;i<playerList.length;i++)
    {
-    
     playerList[i].bracketID=data.phaseGroup.seeds.nodes[i].id
     playerList[i].setSeed(i+1);
    }
-
-   
    return playerList;
 }//end of setPlayerInfo() function
 
-/*
-async function generateSets(data:any,playerList:Competitor[],matchList:MatchStructure)
-{
 
-    var setList:Match[]=[]
-    var finalMatchList:MatchStructure={
-        upper:[],
-        lower:[]
-    }
-    //this loop creates a set and assigns it an ID as long as it isnt an empty set
-    for(let i=0;i<data.event.phaseGroups[0].sets.nodes.length;i++)
-    {
-        
-        setList[i]=
-        {
-            id:data.event.phaseGroups[0].sets.nodes[i].id,
-            name:data.event.phaseGroups[0].sets.nodes[i].identifier,
-            nextMatchId:null,
-            nextLooserMatchId: undefined,
-            tournamentRoundText: "",
-            startTime: "",
-            state: 'DONE' ,
-            participants:[]
-
-        }
-    }
-    //for loop to assign next matchID in both winners and losers
-    for(let i=0;i<setList.length;i++)
-    {
-        
-        for(let j=0;j<setList.length;j++)
-        {
-            for(let k=0;k<data.event.phaseGroups[0].sets.nodes[j].slots.length;k++)
-            {
-            
-
-               if( setList[i].id==data.event.phaseGroups[0].sets.nodes[j].slots[k].prereqId)
-               {
-                   //there are four possible scenarios for next match, winners to winners, winners to losers, losers to losers and losers to winners
-                   
-                   //assigning nextlosersmatchid
-                   if(data.event.phaseGroups[0].sets.nodes[i].round<0)
-                   {
-                       //losers bracket to losers bracket and losers bracket to elimination
-                       //a participant cannot be sent to losers bracket if they are already in losers so it is set to undefined
-                       setList[i].nextLooserMatchId=undefined
-                       setList[i].nextMatchId=data.event.phaseGroups[0].sets.nodes[j].id
-                   }
-                   //if they are in winners and get sent to next winners round
-                   else if(data.event.phaseGroups[0].sets.nodes[i].round>0 && data.event.phaseGroups[0].sets.nodes[j].round>0)
-                   {
-                    setList[i].nextMatchId=data.event.phaseGroups[0].sets.nodes[j].id
-                   }
-                   ////if they are in winners and get sent to next losers round
-                   else if(data.event.phaseGroups[0].sets.nodes[i].round>0 && data.event.phaseGroups[0].sets.nodes[j].round<0)
-                   {
-                    setList[i].nextLooserMatchId=data.event.phaseGroups[0].sets.nodes[j].id
-                   }
-               }
-            }
-        }
-    }
-    //end of for loop to assign next match id
-
-    //for loop to fill in the participants slot, matchlist is full after this
-    
-    for(let i=0;i<setList.length;i++)
-    {
-        if((data.event.phaseGroups[0].sets.nodes[i].slots[0].seed!=null)&&(data.event.phaseGroups[0].sets.nodes[i].slots[1].seed!=null))
-        {
-            console.log("we are good until here")
-            var participant1:Participant=
-            {
-                id:playerList[bracketIDs.indexOf(data.event.phaseGroups[0].sets.nodes[i].slots[0].seed.id)].bracketID,
-                resultText: null,
-                isWinner: compareSeeds(bracketIDs.indexOf(data.event.phaseGroups[0].sets.nodes[i].slots[0].seed.id),bracketIDs.indexOf(data.event.phaseGroups[0].sets.nodes[i].slots[1].seed.id)),
-                status: null,
-                name:playerList[bracketIDs.indexOf(data.event.phaseGroups[0].sets.nodes[i].slots[0].seed.id)].tag
-                
-            }
-
-    
-            var participant2:Participant=
-            {
-                id:playerList[bracketIDs.indexOf(data.event.phaseGroups[0].sets.nodes[i].slots[1].seed.id)].bracketID,
-                resultText: null,
-                isWinner: compareSeeds(bracketIDs.indexOf(data.event.phaseGroups[0].sets.nodes[i].slots[1].seed.id),bracketIDs.indexOf(data.event.phaseGroups[0].sets.nodes[i].slots[0].seed.id)),
-                status: null,
-                name:playerList[bracketIDs.indexOf(data.event.phaseGroups[0].sets.nodes[i].slots[1].seed.id)].tag
-            }
-
-            setList[i].participants.push(participant1)
-            setList[i].participants.push(participant2)
-
-            if(data.event.phaseGroups[0].sets.nodes[i].round>0)
-            {
-
-                finalMatchList.upper.push(setList[i])
-            }
-            else
-            {
-                setList[i].nextLooserMatchId=undefined
-                finalMatchList.lower.push(setList[i]) 
-            }
-
-
-        }
-    }
-    return finalMatchList
-}*/
 
 //function to fill in only the matches that contain at minimum 1 player
-function fillInitial(data:any,playerList:Competitor[],bracketIDs:number[]):Match[]
+async function fillInitial(data:any,playerList:Competitor[],bracketIDs:number[])
 {
-    console.log(bracketIDs.length)
+    
     //the sets with at least one player will be stored here
     var setList:Match[]=[]
     //go through all the sets
@@ -256,9 +255,7 @@ function fillInitial(data:any,playerList:Competitor[],bracketIDs:number[]):Match
                 
             }
 
-            setList[i].participants.push(participant)
-            
-
+            setList[i].participants.push(participant) 
         }
 
         if(data.phaseGroup.sets.nodes[i].slots[1].seed !=null)
