@@ -15,7 +15,7 @@ export default class Competitor
       this.bracketID=bracketID;
       this.seed=seed;
     }
-    setrating(newRating:number)
+    setRating(newRating:number)
     {
       this.rating=newRating
     }
