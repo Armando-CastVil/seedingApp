@@ -12,60 +12,64 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<any>
 ) {
-        const slug = req.query.slug as string
-        const params={slug}
+        
+        const phaseGroup=req.query.phaseGroup as unknown as number
+        const seedsPage=req.query.seedsPage as unknown as number
+        const setsPage=req.query.seedsPage as unknown as number
+        const params={phaseGroup,seedsPage,setsPage}
         const entrants = await getEntrants(params)
         
         res.status(200).json(entrants)
 }
 interface GetEntrants
 {
-slug:string
+phaseGroup:number,
+setsPage: number,
+seedsPage: number
 }
 
 
 // AJAX functions
 export const getEntrants = async (params: GetEntrants) => {
-  console.log("this is api call with slug: "+ params.slug)
+  console.log("ths is an api call with phaseGroup:" + params.phaseGroup+ " setpage: "+params.setsPage+" and seedspage: "+ params.seedsPage)
     const graphql = {
-        query: `query sets($slug: String!, $seedsPerPage: Int, $seedsPage: Int, $setsPerPage: Int, $setsPage: Int) {
-            event(slug: $slug) {
-                phaseGroups {
-                phase {
-                  id
-                }
-                seeds(query: {
-                  perPage: $seedsPerPage
-                  page: $seedsPage
-                }) {
-                  nodes {
-                    players {
-                      id
-                      gamerTag
-                    }
+        query: `query sets($phaseGroup: ID!, $seedsPerPage: Int, $seedsPage: Int, $setsPerPage: Int, $setsPage: Int) {
+          phaseGroup(id: $phaseGroup) {
+              phase {
+                id
+              }
+          
+              seeds(query: {
+                perPage: $seedsPerPage
+                page: $seedsPage
+              }) {
+                nodes {
+                  players {
                     id
-                    progressionSource {
-                      id
-                    }
-                    seedNum
+                    gamerTag
                   }
-                }
-                progressionsOut {
                   id
-                }
-                sets(perPage: $setsPerPage, page: $setsPage, filters: {
-                  showByes: true
-                }) {
-                  nodes {
+                  progressionSource {
                     id
-                    identifier
-                    round
-                    slots(includeByes: false) {
-                      prereqId
-                      prereqType
-                      seed {
-                        id
-                      }
+                  }
+                  seedNum
+                }
+              }
+              progressionsOut {
+                id
+              }
+              sets(perPage: $setsPerPage, page: $setsPage, filters: {
+                showByes: true
+              }) {
+                nodes {
+                  id
+                  identifier
+                  round
+                  slots(includeByes: false) {
+                    prereqId
+                    prereqType
+                    seed {
+                      id
                     }
                   }
                 }
@@ -74,12 +78,13 @@ export const getEntrants = async (params: GetEntrants) => {
           }`,
         variables: {
             
-                "slug": "tournament/miko-s-super-invitational-21st-bday-party-prelocal-before-get/event/super-singles-bracket",
-                "setsPage": 1,
-                "seedsPage": 1,
-                "setsPerPage": 100,
-                "seedsPerPage": 100
-              
+          
+            "phaseGroup":params.phaseGroup,
+            "setsPage": params.setsPage,
+            "seedsPage": params.seedsPage,
+            "setsPerPage": 200,
+            "seedsPerPage": 500
+          
         }
     }
     

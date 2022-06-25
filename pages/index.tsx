@@ -12,6 +12,7 @@ import BracketDisplay from './components/BracketDisplay'
 const Home: NextPage = () => {
   
   
+  
   return (
    
     <div className={styles.container}>

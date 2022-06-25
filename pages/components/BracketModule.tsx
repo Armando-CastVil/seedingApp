@@ -2,6 +2,7 @@ import { DoubleEliminationBracket, Match, SVGViewer } from '@g-loot/react-tourna
 import React, { useState } from 'react';
 import generateMatches from '../modules/generateMatches';
 import getBracketData from '../modules/getBracketData';
+import { mikomatchlist } from '../modules/mikotational';
 
 
 export default function Bracket() {
@@ -11,28 +12,33 @@ export default function Bracket() {
 
     const handleSubmit=  async (event: { preventDefault: () => void; })  => {
         event.preventDefault();    
-        getBracketData("").then((value:any)=>
-        setBracketData(value))
-        setSubmitStatus(true)
+       /* getBracketData("").then((value:any)=>
+        setBracketData(value)).then(generateMatches(bracketData).then((value)=>
+        {
+            setMatchList(value)
+        }))*/
         
+        getBracketData().then((value)=>
+        {
+            setBracketData(value)
+            console.log(value)
+            generateMatches(value)
+            
+        })
+        
+        
+        setSubmitStatus(true)
+    
         
     }
 
-    if(submitStatus&&bracketData!=undefined)
-    {
-        
-       generateMatches(bracketData).then((value)=>
-       {
-           setMatchList(value)
-       })
-        
-    }
+   
 
     return  (
         <div>
-        {submitStatus&&matchList!=undefined?
+        {submitStatus?
           <DoubleEliminationBracket
-          matches={matchList}
+          matches={mikomatchlist}
           matchComponent={Match}
           svgWrapper={({ children, ...props }) => (
               <SVGViewer width={window.innerWidth} height={window.innerHeight} {...props}>
