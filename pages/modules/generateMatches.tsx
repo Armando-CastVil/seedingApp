@@ -45,15 +45,19 @@ export default async function generateMatches(data:any)
     await fillInitial(data,playerList,bracketIDs).then((value)=>
     {
         
-        setList= value
+        generateSets(data,playerList,bracketIDs,value).then((sets)=>
+        {
+        console.log("sets from generate sets"+sets.length)
+        console.log(sets)
+        })
     })
     
     
-   await generateSets(data,playerList,bracketIDs,setList).then((value)=>
+   /*await generateSets(data,playerList,bracketIDs,setList).then((value)=>
     {
         console.log("sets from generate sets"+value.length)
         console.log(value)
-    })
+    })*/
    /* generateSets(data,playerList,matchList).then((value)=>
     {
         matchList=value
@@ -86,7 +90,7 @@ async function generateSets(data:any,playerList:Competitor[],bracketIDs:any[],se
             //if a set has 2 participants and neither has been set as a winner, meaning match hasn't been processed
             if(setList[i].participants.length==2 && (setList[i].participants[0].isWinner==false)&&(setList[i].participants[1].isWinner==false))
             {
-
+                console.log(setList[i].participants.length)
                 //find out the winner of the set and assign them to their corresponding variable
                 if(bracketIDs.indexOf(setList[i].participants[0].id)<bracketIDs.indexOf(setList[i].participants[1].id))
                 {  
