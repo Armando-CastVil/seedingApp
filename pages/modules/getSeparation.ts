@@ -6,7 +6,7 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase();
 const conservativity = 1000;
 
-//all paramaters are 1 indexed
+//all paramaters are 0 indexed
 export default async function getSeparation(projectedMatchesArray:number[][], ids:string[], ratings:number[], carpools:number[][]): Promise<number[]> {
     const maximumFunctionRuntime:number = 10000;
     const start:number = Date.now();
