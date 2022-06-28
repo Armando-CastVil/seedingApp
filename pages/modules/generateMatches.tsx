@@ -168,7 +168,7 @@ async function setResults(data:any,playerList:Competitor[],bracketIDs:any[],setL
                     {
 
                         //assign the next set as this sets next match
-                        setList[setsWithResults[i]].nextMatchId=data.phaseGroup.sets.nodes[j].id
+                        setList[setsWithResults[i]].nextMatchId=getNextNonByeMatch(data,data.phaseGroup.sets.nodes[j])
                         
                         //push the winner in to the next set
                         if(setList[setsWithResults[i]].participants[0].isWinner)
@@ -197,8 +197,8 @@ async function setResults(data:any,playerList:Competitor[],bracketIDs:any[],setL
                     if(data.phaseGroup.sets.nodes[setsWithResults[i]].round>0 && data.phaseGroup.sets.nodes[j].round<0)
                     {
                         //assign the next set as this sets next match
-                        setList[setsWithResults[i]].nextLooserMatchId=data.phaseGroup.sets.nodes[j].id
-
+                        setList[setsWithResults[i]].nextLooserMatchId=getNextNonByeMatch(data,data.phaseGroup.sets.nodes[j])
+                        console.log(setList[setsWithResults[i]].name+" s next losers match is "+getNextNonByeMatch(data,data.phaseGroup.sets.nodes[j]))
                         //push the loser in to the next set
                          if(setList[setsWithResults[i]].participants[0].isWinner==false)
                          {
@@ -214,7 +214,7 @@ async function setResults(data:any,playerList:Competitor[],bracketIDs:any[],setL
                     if(data.phaseGroup.sets.nodes[setsWithResults[i]].round<0 && data.phaseGroup.sets.nodes[j].round<0)
                     {
                         //assign the next set as this sets next match
-                        setList[setsWithResults[i]].nextMatchId=data.phaseGroup.sets.nodes[j].id
+                        setList[setsWithResults[i]].nextMatchId=getNextNonByeMatch(data,data.phaseGroup.sets.nodes[j])
                         setList[setsWithResults[i]].nextLooserMatchId=undefined
 
                         //push the winner in to the next set
@@ -241,7 +241,7 @@ async function setResults(data:any,playerList:Competitor[],bracketIDs:any[],setL
                     if(data.phaseGroup.sets.nodes[setsWithResults[i]].round<0 && data.phaseGroup.sets.nodes[j].round>0)
                     {
                         //assign the next set as this sets next match
-                        setList[setsWithResults[i]].nextMatchId=data.phaseGroup.sets.nodes[j].id
+                        setList[setsWithResults[i]].nextMatchId=getNextNonByeMatch(data,data.phaseGroup.sets.nodes[j])
 
                         //push the winner in to the next set
                         if(setList[setsWithResults[i]].participants[0].isWinner==true)
@@ -370,12 +370,60 @@ async function fillInitial(data:any,playerList:Competitor[],bracketIDs:number[])
 
 }
 
-function compareSeeds(seed1:number,seed2:number)
+function getNextNonByeMatch(data:any, nextMatchObject:any)
 {
-    if(seed1<seed2)
+
+    var nextMatchID:any
+
+    var stopFlag=false;
+
+    //if the next match has no byes, then return it
+    if(nextMatchObject.slots[0].prereqType!="bye"&&nextMatchObject.slots[1].prereqType!="bye")
+        {
+            
+            nextMatchID=nextMatchObject.id
+            return nextMatchID
+        }
+    //if it has a bye, find the next match's next match
+    if(nextMatchObject.slots[0].prereqType=="bye"||nextMatchObject.slots[1].prereqType=="bye")
     {
-        return true
+       
+        for(let j=0;j<data.phaseGroup.sets.nodes.length;j++)
+            {
+                //check each slot to see if the set with results is a prerequisite
+                for(let k=0;k<data.phaseGroup.sets.nodes[j].slots.length;k++)
+                {
+                    //this means that node[j] is its next match
+                    if(nextMatchObject.id==data.phaseGroup.sets.nodes[j].slots[k].prereqId)
+                        {
+                            
+                            nextMatchObject=data.phaseGroup.sets.nodes[j]
+                            nextMatchID=nextMatchObject.id
+               
+                    if(nextMatchObject.slots[0].prereqType=="bye"||nextMatchObject.slots[1].prereqType=="bye")
+                        {
+                            
+                            nextMatchID=getNextNonByeMatch(data,nextMatchObject)
+                            
+                            return nextMatchID
+                            
+                        }
+                    else
+                        {
+                            return nextMatchID
+                        }
+                stopFlag=true
+                break
+            }
+                }
+
+        if(stopFlag)
+            {
+            break
+            }
+        }
+    
     }
-    else
-    return false
+
+
 }
