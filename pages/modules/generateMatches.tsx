@@ -50,13 +50,13 @@ export default async function generateMatches(data:any)
     await generateSets(data,playerList,bracketIDs,setList).then((value)=>
     {
         setList=value
-        console.log(value)
+        //console.log(value)
         let counter=0;
         for(let i=0;i<setList.length;i++)
         {
             if(setList[i].participants.length==2)
             {
-                console.log(setList[i].name)
+                //console.log(setList[i].name)
             }
         }
         
@@ -159,24 +159,26 @@ async function setResults(data:any,playerList:Competitor[],bracketIDs:any[],setL
                 //if the current set(setList[i]) is a prerequisite, then this match is the match that follows
                 if(setList[setsWithResults[i]].id==data.phaseGroup.sets.nodes[j].slots[k].prereqId)
                 {
-
+                    console.log(setList[setsWithResults[i]].name+" is a prerequisite to"+data.phaseGroup.sets.nodes[j].identifier)
                     //the possible scenarios for a participant are: winners bracket to winners bracket, winners to losers, 
                     //losers to losers, and losers to winners(only in case of losers finals)
 
                     //if the current set and the next set are in winners
                     if(data.phaseGroup.sets.nodes[setsWithResults[i]].round>0 && data.phaseGroup.sets.nodes[j].round>0)
                     {
-
+                        console.log("both sets are in winners")
                         //assign the next set as this sets next match
-                        setList[setsWithResults[i]].nextMatchId=getNextNonByeMatch(data,data.phaseGroup.sets.nodes[j])
-                        
+                        setList[setsWithResults[i]].nextMatchId=getNextNonByeMatch(data,data.phaseGroup.sets.nodes[j]).id
+                        console.log(setList[setsWithResults[i]].name+"s next winners match is "+data.phaseGroup.sets.nodes[j].identifier)
                         //push the winner in to the next set
                         if(setList[setsWithResults[i]].participants[0].isWinner)
                         {
+                            console.log(setList[setsWithResults[i]].participants[0].name+" is the winner")
                             //make a copy of the participant but with winner status set to false
                             var tempWinner:Participant=setList[setsWithResults[i]].participants[0]
                             tempWinner.isWinner=false
                             setList[j].participants.push(tempWinner)
+                            console.log(setList[setsWithResults[i]].participants[0].name+' will be pushed in to'+setList[j].name)
                             setList[setsWithResults[i]].participants[0].isWinner=true
                             
                         }
@@ -186,6 +188,7 @@ async function setResults(data:any,playerList:Competitor[],bracketIDs:any[],setL
                             var tempWinner:Participant=setList[setsWithResults[i]].participants[1]
                             tempWinner.isWinner=false
                             setList[j].participants.push(tempWinner)
+                            console.log(setList[setsWithResults[i]].participants[1].name+' will be pushed in to'+setList[j].name)
                             setList[setsWithResults[i]].participants[1].isWinner=true
                         }
                         
@@ -196,17 +199,44 @@ async function setResults(data:any,playerList:Competitor[],bracketIDs:any[],setL
                     //if the current set is in winners and the next set is in losers
                     if(data.phaseGroup.sets.nodes[setsWithResults[i]].round>0 && data.phaseGroup.sets.nodes[j].round<0)
                     {
+                        console.log(data.phaseGroup.sets.nodes[setsWithResults[i]].identifier+" is in winners and "+data.phaseGroup.sets.nodes[j].identifier+" is in losers")
                         //assign the next set as this sets next match
-                        setList[setsWithResults[i]].nextLooserMatchId=getNextNonByeMatch(data,data.phaseGroup.sets.nodes[j])
-                        console.log(setList[setsWithResults[i]].name+" s next losers match is "+getNextNonByeMatch(data,data.phaseGroup.sets.nodes[j]))
+                        setList[setsWithResults[i]].nextLooserMatchId=getNextNonByeMatch(data,data.phaseGroup.sets.nodes[j]).id
+                        console.log(setList[setsWithResults[i]].name+" next match in losers is "+getNextNonByeMatch(data,data.phaseGroup.sets.nodes[j]).identifier)
                         //push the loser in to the next set
                          if(setList[setsWithResults[i]].participants[0].isWinner==false)
                          {
-                           setList[j].participants.push(setList[setsWithResults[i]].participants[0])
+                             for(let c=0;c<setList.length;c++)
+                             {
+
+                                 if(setList[c].id==setList[setsWithResults[i]].nextLooserMatchId)
+                                 {
+                                    setList[c].participants.push(setList[setsWithResults[i]].participants[0])
+                                    break
+                                 }
+                             }
+                           
                          }
                         else
                         {
-                           setList[j].participants.push(setList[setsWithResults[i]].participants[1])
+
+                            if(setList[setsWithResults[i]].participants[0].isWinner==false)
+                            {
+                                
+                                for(let c=0;c<setList.length;c++)
+                                {
+   
+                                    
+                                    if(setList[c].id==setList[setsWithResults[i]].nextLooserMatchId)
+                                    {
+                                       
+                                       setList[c].participants.push(setList[setsWithResults[i]].participants[0])
+                                       break
+                                    }
+                                }
+                              
+                            }
+                           
                         }
                  
                     }
@@ -223,7 +253,15 @@ async function setResults(data:any,playerList:Competitor[],bracketIDs:any[],setL
                             //make a copy of the participant but with winner status set to false
                             var tempWinner:Participant=setList[setsWithResults[i]].participants[0]
                             tempWinner.isWinner=false
-                            setList[j].participants.push(tempWinner)
+                            for(let c=0;c<setList.length;c++)
+                            {
+                                if(setList[c].id==getNextNonByeMatch(data,data.phaseGroup.sets.nodes[j]).id)
+                                {
+                                   setList[c].participants.push(tempWinner)
+                                   break
+                                }
+                            }
+                          
                             setList[setsWithResults[i]].participants[0].isWinner=true
                             }
                         else
@@ -231,7 +269,14 @@ async function setResults(data:any,playerList:Competitor[],bracketIDs:any[],setL
                             //make a copy of the participant but with winner status set to false
                             var tempWinner:Participant=setList[setsWithResults[i]].participants[1]
                             tempWinner.isWinner=false
-                            setList[j].participants.push(tempWinner)
+                            for(let c=0;c<setList.length;c++)
+                            {
+                                if(setList[c].id==getNextNonByeMatch(data,data.phaseGroup.sets.nodes[j]).id)
+                                {
+                                   setList[c].participants.push(tempWinner)
+                                   break
+                                }
+                            }
                             setList[setsWithResults[i]].participants[1].isWinner=true
                             }
                     }  
@@ -373,55 +418,66 @@ async function fillInitial(data:any,playerList:Competitor[],bracketIDs:number[])
 function getNextNonByeMatch(data:any, nextMatchObject:any)
 {
 
-    var nextMatchID:any
-
+   console.log("calling get nextnonbyematch with node "+nextMatchObject.identifier)
     var stopFlag=false;
 
     //if the next match has no byes, then return it
     if(nextMatchObject.slots[0].prereqType!="bye"&&nextMatchObject.slots[1].prereqType!="bye")
-        {
-            
-            nextMatchID=nextMatchObject.id
-            return nextMatchID
-        }
+    {
+        console.log(nextMatchObject.identifier+" has no byes")
+        return nextMatchObject
+    }
     //if it has a bye, find the next match's next match
     if(nextMatchObject.slots[0].prereqType=="bye"||nextMatchObject.slots[1].prereqType=="bye")
     {
-       
+        console.log(nextMatchObject.identifier+" has byes")
         for(let j=0;j<data.phaseGroup.sets.nodes.length;j++)
+        {
+            //check each slot to see if the set with results is a prerequisite
+            console.log("checking slots")
+            for(let k=0;k<data.phaseGroup.sets.nodes[j].slots.length;k++)
             {
-                //check each slot to see if the set with results is a prerequisite
-                for(let k=0;k<data.phaseGroup.sets.nodes[j].slots.length;k++)
-                {
-                    //this means that node[j] is its next match
-                    if(nextMatchObject.id==data.phaseGroup.sets.nodes[j].slots[k].prereqId)
-                        {
-                            
-                            nextMatchObject=data.phaseGroup.sets.nodes[j]
-                            nextMatchID=nextMatchObject.id
+                //this means that node[j] is its next match
+                if(nextMatchObject.id==data.phaseGroup.sets.nodes[j].slots[k].prereqId)
+                    {   
+                        console.log(nextMatchObject.identifier+"s next match is "+ data.phaseGroup.sets.nodes[j])
+                        nextMatchObject=data.phaseGroup.sets.nodes[j]
+                        console.log("the new next match object is "+ nextMatchObject.identifier)
+                    }
                
+                    //if the next match also has a bye
                     if(nextMatchObject.slots[0].prereqType=="bye"||nextMatchObject.slots[1].prereqType=="bye")
+                    {
+                        console.log(nextMatchObject.identifier+" has byes")
+                        nextMatchObject=getNextNonByeMatch(data,nextMatchObject) 
+
+                        if(nextMatchObject.slots[0].prereqType!="bye"&&nextMatchObject.slots[1].prereqType!="bye")
                         {
-                            
-                            nextMatchID=getNextNonByeMatch(data,nextMatchObject)
-                            
-                            return nextMatchID
-                            
+                            console.log(nextMatchObject.identifier+" has no byes")
+                            return nextMatchObject
                         }
-                    else
-                        {
-                            return nextMatchID
-                        }
-                stopFlag=true
+                        
+                            
+                    }
+                    else if(nextMatchObject.slots[0].prereqType!="bye"&&nextMatchObject.slots[1].prereqType!="bye")
+                    {
+                        stopFlag=true
+                        console.log(nextMatchObject.identifier+" has no byes")
+                        return nextMatchObject
+                        
+                    }
+                
+            }
+
+            if(stopFlag)
+            {
                 break
             }
-                }
-
-        if(stopFlag)
-            {
-            break
-            }
+            
         }
+
+      
+        
     
     }
 
