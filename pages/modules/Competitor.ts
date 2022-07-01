@@ -1,11 +1,14 @@
+import { Participant } from "@g-loot/react-tournament-brackets/dist/src/types";
+
 export default class Competitor
 {
     ID: string;
     tag: string;
     rating: number;
-    projectedPath:Competitor[]=[];
+    projectedPath:Participant[]=[];
     bracketID:number;
     seed:number;
+
     
 
     constructor(ID:string,tag:string,rating:number,bracketID:number,seed:number) {
@@ -27,7 +30,7 @@ export default class Competitor
     {
       this.seed=seed
     }
-    addPlayerToPath(player:Competitor)
+    addPlayerToPath(player:Participant)
     {
       this.projectedPath.push(player)
     }

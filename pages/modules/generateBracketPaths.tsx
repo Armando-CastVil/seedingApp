@@ -13,7 +13,7 @@ interface MatchStructure
 
 
 //start of function
-export default async function generateMatches(data:any)
+export default async function generateBracketPaths(data:any)
 {
 
     //initializing arrays
@@ -56,13 +56,14 @@ export default async function generateMatches(data:any)
     //fill the final matchList object with the setList that we just obtained
     matchList=await fillFinalMatches(setList,data,matchList)
     matchList=await errorElimination(matchList)
-    console.log(matchList)
+    let playerListWithPaths=await setProjected(playerList,matchList,bracketIDs)
+    console.log(playerListWithPaths)
    
     
    
    
-    console.log("returning matchList "+matchList)
-    return matchList
+    console.log("returning matchList "+playerListWithPaths)
+    return playerListWithPaths
 
    
 }
@@ -533,3 +534,19 @@ async function errorElimination(matchList:MatchStructure)
     return matchList
 }
 
+async function setProjected(playerList:Competitor[],matchList:MatchStructure,bracketIDs:number[])
+{
+    for( var i=0;matchList.upper.length-1;i++)
+    {
+        playerList[bracketIDs.indexOf(matchList.upper[i].participants[0].id as number)].projectedPath.push(matchList.upper[i].participants[1])
+        playerList[bracketIDs.indexOf(matchList.upper[i].participants[1].id as number)].projectedPath.push(matchList.upper[i].participants[0])
+    }
+
+    for( var i=0;matchList.lower.length-1;i++)
+    {
+        playerList[bracketIDs.indexOf(matchList.lower[i].participants[0].id as number)].projectedPath.push(matchList.lower[i].participants[1])
+        playerList[bracketIDs.indexOf(matchList.lower[i].participants[1].id as number)].projectedPath.push(matchList.upper[i].participants[0])
+    }
+
+    return playerList
+}
