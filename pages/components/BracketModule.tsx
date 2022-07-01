@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import generateMatches from '../modules/generateMatches';
 import getBracketData from '../modules/getBracketData';
 import { mikomatchlist } from '../modules/mikotational';
+import generateBracketPaths from '../modules/generateBracketPaths';
 
 
 export default function Bracket() {
@@ -21,24 +22,31 @@ export default function Bracket() {
         getBracketData().then((value)=>
         {
             setBracketData(value)
+            generateBracketPaths(value)
             console.log(value)
-            generateMatches(value)
+            generateMatches(value).then((value)=>
+            {
+                setMatchList(value)
+                
+
+            })
             
         })
         
         
         setSubmitStatus(true)
+        
     
         
     }
-
-   
+    
+  
 
     return  (
         <div>
-        {submitStatus?
+        {submitStatus &&matchList!=undefined?
           <DoubleEliminationBracket
-          matches={mikomatchlist}
+          matches={matchList}
           matchComponent={Match}
           svgWrapper={({ children, ...props }) => (
               <SVGViewer width={window.innerWidth} height={window.innerHeight} {...props}>
