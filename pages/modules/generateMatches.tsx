@@ -44,6 +44,8 @@ export default async function generateMatches(data:any)
     {
         
         setList=value
+        console.log("initial setlist:")
+        console.log(value)
         
     })
     
@@ -78,6 +80,7 @@ async function generateSets(data:any,playerList:Competitor[],bracketIDs:any[],se
     for(let r=0;r<rounds;r++)
     {   
 
+        console.log("ROUND: "+ r)
         
         
         await getResults(setList,bracketIDs).then((value)=>
@@ -91,6 +94,7 @@ async function generateSets(data:any,playerList:Competitor[],bracketIDs:any[],se
         await setResults(data,playerList,bracketIDs,setList,setsWithResults!).then((value)=>
         {
             setList=value
+            console.log(setList)
             
             
         })
@@ -190,7 +194,7 @@ async function setResults(data:any,playerList:Competitor[],bracketIDs:any[],setL
                             tempWinner.isWinner=false
                             setList[j].participants.push(tempWinner)
                         
-                            setList[setsWithResults[i]].participants[1].isWinner=true
+                        
                         }
                         
                         
@@ -428,6 +432,9 @@ async function fillInitial(data:any,playerList:Competitor[],bracketIDs:number[])
 
     }
 
+
+    
+    setList=await setAllToFalse(setList)
     return setList
 
 }
@@ -531,5 +538,25 @@ async function errorElimination(matchList:MatchStructure)
     matchList.upper[matchList.upper.length-1].nextMatchId=null
     
     return matchList
+}
+async function setAllToFalse(setList:Match[])
+{
+    var counter=0;
+    var returnFlag=false
+    for(let i=0;i<setList.length;i++)
+    {
+
+        for(let j=0;j<setList[i].participants.length;j++)
+        {
+            
+            setList[i].participants[j].isWinner=false
+            
+            counter++
+        }
+      
+    }
+    console.log(counter)
+    return setList
+  
 }
 
