@@ -22,7 +22,7 @@ export default function Bracket() {
         getBracketData().then((value)=>
         {
             setBracketData(value)
-            generateBracketPaths(value)
+            //generateBracketPaths(value)
             console.log(value)
             generateMatches(value).then((value)=>
             {
