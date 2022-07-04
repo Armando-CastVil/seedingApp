@@ -4,6 +4,7 @@ import generateMatches from '../modules/generateMatches';
 import getBracketData from '../modules/getBracketData';
 import { mikomatchlist } from '../modules/mikotational';
 import generateBracketPaths from '../modules/generateBracketPaths';
+import getAllSeedingInfo from '../modules/getAllSeedingInfo';
 
 
 export default function Bracket() {
@@ -24,12 +25,14 @@ export default function Bracket() {
             setBracketData(value)
             //generateBracketPaths(value)
             console.log(value)
-            generateMatches(value).then((value)=>
+            /*generateMatches(value).then((value)=>
             {
                 setMatchList(value)
                 
 
-            })
+            })*/
+
+            getAllSeedingInfo(value)
             
         })
         
