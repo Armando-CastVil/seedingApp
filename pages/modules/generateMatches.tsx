@@ -114,6 +114,13 @@ async function getResults(setList:Match[],bracketIDs:any[])
     //find out winner and loser and push them in to their corresponding next matches
     for(let i=0;i<setList.length;i++)
     { 
+        //set both to false if they were misteriously set to as winners
+        if(setList[i].participants.length==2 && (setList[i].participants[0].isWinner==true)&&(setList[i].participants[1].isWinner==true))
+        {
+            setList[i].participants[0].isWinner=false
+            setList[i].participants[1].isWinner=false
+
+        }
         //if a set has 2 participants and neither has been set as a winner, meaning match hasn't been processed
         if(setList[i].participants.length==2 && (setList[i].participants[0].isWinner==false)&&(setList[i].participants[1].isWinner==false))
             {
@@ -411,6 +418,7 @@ async function fillInitial(data:any,playerList:Competitor[],bracketIDs:number[])
                 
             }
 
+            participant.isWinner=false
             setList[i].participants.push(participant) 
         }
 
@@ -425,7 +433,7 @@ async function fillInitial(data:any,playerList:Competitor[],bracketIDs:number[])
                 name:playerList[bracketIDs.indexOf(data.phaseGroup.sets.nodes[i].slots[1].seed.id)].tag
                 
             }
-
+            participant.isWinner=false
             setList[i].participants.push(participant)
         }
 
@@ -435,6 +443,8 @@ async function fillInitial(data:any,playerList:Competitor[],bracketIDs:number[])
 
     
     setList=await setAllToFalse(setList)
+    console.log("after all are set to false:")
+    console.log(setList)
     return setList
 
 }
@@ -551,9 +561,9 @@ async function setAllToFalse(setList:Match[])
             
             setList[i].participants[j].isWinner=false
             
-            counter++
+            
         }
-      
+        counter++
     }
     console.log(counter)
     return setList
