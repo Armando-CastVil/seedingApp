@@ -25,14 +25,14 @@ export default function Bracket() {
             setBracketData(value)
             //generateBracketPaths(value)
             console.log(value)
-            /*generateMatches(value).then((value)=>
+            generateMatches(value).then((value)=>
             {
                 setMatchList(value)
                 
 
-            })*/
+            })
 
-            getAllSeedingInfo(value)
+            //getAllSeedingInfo(value)
             
         })
         
