@@ -14,14 +14,17 @@ export default async function handler(
 ) 
 {
         const slug = req.query.slug as string
-        const params={slug}
+        const page=req.query.page as unknown as number
+        const params={slug,page}
+
         const entrants = await getEntrants(params)
         
         res.status(200).json(entrants)
 }
 interface GetEntrants
 {
-slug:string
+slug:string,
+page:number
 }
 
 
@@ -29,35 +32,36 @@ slug:string
 export const getEntrants = async (params: GetEntrants) => {
   console.log("this is api call with slug: "+ params.slug)
     const graphql = {
-        query: `query EventEntrants($eventSlug: String, $perPage: Int!) {
-            event(slug:$eventSlug) {
-              id
-              name
-              entrants(query: {
-                perPage: $perPage
-              }) {
-                pageInfo {
-                  total
-                  totalPages
-                }
-                nodes {
+        query: `query EventEntrants($eventSlug: String, $perPage: Int!,$page:Int!) {
+          event(slug:$eventSlug) {
+            id
+            name
+            entrants(query: {
+              page:$page
+              perPage: $perPage
+            }) {
+              pageInfo {
+                total
+                totalPages
+              }
+              nodes {
+                id
+                participants {
                   id
-                  participants {
+                  gamerTag
+                  player
+                  {
                     id
-                    gamerTag
-                    player
-                    {
-                      id
-                    }
                   }
                 }
               }
             }
-          }`,
-        variables: {
-            
+          }
+        }`,
+        variables: { 
             "eventSlug":params.slug,
-             "perPage": 500
+             "perPage": 420,
+             "page":params.page
         }
     }
     

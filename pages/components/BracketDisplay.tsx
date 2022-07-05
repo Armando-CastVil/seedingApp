@@ -18,12 +18,7 @@ interface MatchStructure
 export default function BracketDisplay()
 {
   
-    var playerList:Competitor[]=[];
-    var matchList:MatchStructure=
-    {
-        upper:[],
-        lower:[]
-    }
+
 
     const DynamicComponentWithNoSSR = dynamic(
         () => import("../components/BracketModule"),{
