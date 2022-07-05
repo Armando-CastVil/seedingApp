@@ -25,14 +25,17 @@ export default function Bracket() {
             setBracketData(value)
             //generateBracketPaths(value)
             console.log(value)
-            generateMatches(value).then((value)=>
+            /*generateMatches(value).then((value)=>
             {
                 setMatchList(value)
                 
 
-            })
+            })*/
 
-            //getAllSeedingInfo(value)
+            getAllSeedingInfo(value)/*.then((matches)=>
+            {
+                setMatchList(matches)
+            })*/
             
         })
         
@@ -52,7 +55,7 @@ export default function Bracket() {
           matches={matchList}
           matchComponent={Match}
           svgWrapper={({ children, ...props }) => (
-              <SVGViewer width={window.innerWidth} height={window.innerHeight} {...props}>
+              <SVGViewer width={1000} height={1000} {...props}>
                 {children}
               </SVGViewer>
             )}
