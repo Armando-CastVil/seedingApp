@@ -1,7 +1,8 @@
 import { Match,Participant } from "@g-loot/react-tournament-brackets/dist/src/types";
 import Competitor from "./Competitor";
-import { fillInitialBracket } from "./fillInitialBracket";
+import  fillInitialBracket from "./fillInitialBracket";
 import { setPlayerInfo } from "./setPlayerInfo";
+import setProjectedPath from "./setProjectedPath";
 import setRating from "./setRating";
 import { setResults } from "./setResults";
 import sortByRating from "./sortByRating";
@@ -33,10 +34,7 @@ export default async function getAllSeedingInfo(data:any)
 
     //this array holds only the sets that have results that have been set during a given round
     var setsWithResults:any=[]
-    //set data to each player, list is already sorted by rating
-    playerList=await setPlayerInfo(data)
-    
-    
+
     //sets attributes for Competitor objects and stores them in the playerlist array
     //also assigns their bracket ID to their corresponding index in the bracketID array
     await setPlayerInfo(data).then((value: Competitor[])=>
@@ -46,48 +44,49 @@ export default async function getAllSeedingInfo(data:any)
             {
                 bracketIDs[i]=value[i].bracketID
             }
+
+            
         })
 
+        
+   
+    
     //fills the bracket from only the initially available data
-    setList=await fillInitialBracket(data,playerList,bracketIDs)
-    console.log("intiial value:")
+    setList=fillInitialBracket(data,playerList,bracketIDs)
+    let tempSetList=JSON.parse(JSON.stringify(setList))
     console.log(setList)
     
-        
-
-    
-    /*
     for(let i=0;i<10;i++)
     {
         console.log("ROUND: "+ i)
-        await getResults(setList,bracketIDs).then((value)=>
+        await getResults(tempSetList,bracketIDs).then((value)=>
         {
             
-            setList=value.setList
-            console.log(setList)
-            setsWithResults=value.setsWithResults
+            tempSetList=JSON.parse(JSON.stringify(value.setList))
+            console.log(tempSetList)
+            setsWithResults=[...value.setsWithResults]
             console.log(setsWithResults)
         })
 
-        setList=await setResults(data,playerList,bracketIDs,setList,setsWithResults)
-        console.log("after setResults")
-        {
-            setList
-        }
+        tempSetList=JSON.parse(JSON.stringify(await setResults(data,playerList,bracketIDs,tempSetList,setsWithResults)))
+        
+        
         setsWithResults=[];
     
     }
 
-    await fillFinalMatches(setList,data,matchList).then((value)=>
+    await fillFinalMatches(tempSetList,data,matchList).then((value)=>
     {
         matchList=value
         
     })
     matchList=await errorElimination(matchList)
+    playerList=setProjectedPath(matchList,playerList,bracketIDs)
+    console.log(playerList)
     console.log(matchList)
-    return matchList*/
+    return matchList
     
-    
+
 }
 
 async function getResults(setList:Match[],bracketIDs:any[])
@@ -157,5 +156,4 @@ async function errorElimination(matchList:MatchStructure)
     
     return matchList
 }
-
 

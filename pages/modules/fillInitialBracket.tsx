@@ -2,7 +2,7 @@ import { Match, Participant } from "@g-loot/react-tournament-brackets/dist/src/t
 import Competitor from "./Competitor"
 
 //function to fill in only the matches that contain at minimum 1 player
-export async function fillInitialBracket(data:any,playerList:Competitor[],bracketIDs:number[])
+export default  function fillInitialBracket(data:any,playerList:Competitor[],bracketIDs:number[])
 {
     console.log("fill initial was called")
     //the sets with at least one player will be stored here
