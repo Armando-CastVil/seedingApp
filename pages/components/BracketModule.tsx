@@ -32,10 +32,10 @@ export default function Bracket() {
 
             })*/
 
-            getAllSeedingInfo(value)/*.then((matches)=>
+            getAllSeedingInfo(value).then((matches)=>
             {
                 setMatchList(matches)
-            })*/
+            })
             
         })
         
@@ -55,7 +55,7 @@ export default function Bracket() {
           matches={matchList}
           matchComponent={Match}
           svgWrapper={({ children, ...props }) => (
-              <SVGViewer width={1000} height={1000} {...props}>
+              <SVGViewer width={window.innerWidth} height={window.innerHeight} {...props}>
                 {children}
               </SVGViewer>
             )}
