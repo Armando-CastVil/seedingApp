@@ -19,6 +19,8 @@ interface MatchStructure
 export default async function getAllSeedingInfo(data:any)
 {
     //initializing arrays
+
+    //playerList is an array of competitor objects
     var playerList:Competitor[]=[]
     var setList:Match[]=[];
     var matchList:MatchStructure=
