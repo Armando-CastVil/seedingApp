@@ -3,9 +3,8 @@ import Competitor from "./Competitor";
 import  fillInitialBracket from "./fillInitialBracket";
 import { setPlayerInfo } from "./setPlayerInfo";
 import setProjectedPath from "./setProjectedPath";
-import setRating from "./setRating";
 import { setResults } from "./setResults";
-import sortByRating from "./sortByRating";
+
 
 
 //interface for the object we will be returning
