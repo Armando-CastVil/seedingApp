@@ -1,16 +1,18 @@
 import { DoubleEliminationBracket, Match, SVGViewer } from '@g-loot/react-tournament-brackets';
 import React, { useState } from 'react';
-import generateMatches from '../modules/generateMatches';
 import getBracketData from '../modules/getBracketData';
-import { mikomatchlist } from '../modules/mikotational';
-import generateBracketPaths from '../modules/generateBracketPaths';
 import getAllSeedingInfo from '../modules/getAllSeedingInfo';
+import useWindowSize from '../Hooks/useWindow';
 
 
 export default function Bracket() {
     const [bracketData,setBracketData]=useState<any>();
     const [submitStatus,setSubmitStatus]=useState(false);
     const [matchList,setMatchList]=useState<any>();
+
+    const [width, height] = useWindowSize();
+    const finalWidth = Math.max(width - 50, 500);
+    const finalHeight = Math.max(height - 100, 500);
 
     const handleSubmit=  async (event: { preventDefault: () => void; })  => {
         event.preventDefault();    
@@ -55,7 +57,7 @@ export default function Bracket() {
           matches={matchList}
           matchComponent={Match}
           svgWrapper={({ children, ...props }) => (
-              <SVGViewer width={window.innerWidth} height={window.innerHeight} {...props}>
+              <SVGViewer width={finalWidth} height={finalHeight} {...props}>
                 {children}
               </SVGViewer>
             )}
