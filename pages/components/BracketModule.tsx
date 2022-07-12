@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import getBracketData from '../modules/getBracketData';
 import getAllSeedingInfo from '../modules/getAllSeedingInfo';
 import useWindowSize from '../Hooks/useWindow';
-import GetListFromURL from './GetListFromURL';
 
 
 export default function Bracket() {
@@ -11,9 +10,6 @@ export default function Bracket() {
     const [submitStatus,setSubmitStatus]=useState(false);
     const [matchList,setMatchList]=useState<any>();
 
-    const [width, height] = useWindowSize();
-    const finalWidth = Math.max(width - 50, 500);
-    const finalHeight = Math.max(height - 100, 500);
 
     const handleSubmit=  async (event: { preventDefault: () => void; })  => {
         event.preventDefault();    
@@ -58,12 +54,12 @@ export default function Bracket() {
           matches={matchList}
           matchComponent={Match}
           svgWrapper={({ children, ...props }) => (
-              <SVGViewer width={finalWidth} height={finalHeight} {...props}>
+              <SVGViewer width={1000} height={1000} {...props}>
                 {children}
               </SVGViewer>
             )}
         />
-        :<><button onClick={e => { handleSubmit(e); } }> GET DATA</button><GetListFromURL /></>
+        :<button onClick={e => { handleSubmit(e) }}> GET DATA</button> 
         }
     </div>
     )
