@@ -7,7 +7,7 @@ export default async function getBracketData()
     var pageCounter=1
     //this will hold all the data from the query results, including those from beyond page 1
     var bracketData:any
-    var phaseGroup=1798060
+    var phaseGroup=1804692
     var thereIsData=true
    
     
