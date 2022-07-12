@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import getBracketData from '../modules/getBracketData';
 import getAllSeedingInfo from '../modules/getAllSeedingInfo';
 import useWindowSize from '../Hooks/useWindow';
+import GetListFromURL from './GetListFromURL';
 
 
 export default function Bracket() {
@@ -62,7 +63,7 @@ export default function Bracket() {
               </SVGViewer>
             )}
         />
-        :<button onClick={e => { handleSubmit(e) }}> GET DATA</button> 
+        :<><button onClick={e => { handleSubmit(e); } }> GET DATA</button><GetListFromURL /></>
         }
     </div>
     )
