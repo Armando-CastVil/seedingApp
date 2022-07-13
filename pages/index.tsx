@@ -6,6 +6,7 @@ import URLForm from './components/URLForm'
 import React  from 'react'
 import GetListFromURL from './components/GetListFromURL'
 import BracketDisplay from './components/BracketDisplay'
+import SetPhaseGroups from './components/SetPhaseGroups'
 
 
 
@@ -25,7 +26,7 @@ const Home: NextPage = () => {
       <main className={styles.main}>
 
       
-      <BracketDisplay/>
+     <SetPhaseGroups/>
       
      
       
