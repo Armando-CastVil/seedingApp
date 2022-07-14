@@ -105,7 +105,7 @@ async function getResults(setList:Match[],bracketIDs:any[])
                 setsWithResults.push(i)
                 
                 //find out the winner of the set and assign them to their corresponding variable
-                if(bracketIDs.indexOf(setList[i].participants[0].id)<bracketIDs.indexOf(setList[i].participants[1].id))
+                if(bracketIDs.indexOf(setList[i].participants[0].bracketID)<bracketIDs.indexOf(setList[i].participants[1].bracketID))
                 {  
                     setList[i].participants[0].isWinner=true
                     setList[i].participants[1].isWinner=false
