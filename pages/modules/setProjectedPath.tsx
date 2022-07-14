@@ -12,16 +12,16 @@ export default function setProjectedPath(matchList:MatchStructure,playerList:Com
     //set players from projected path in Winners
     for(let i=0;i<matchList.upper.length;i++)
     {
-        playerList[bracketIDs.indexOf(matchList.upper[i].participants[0].id as number)].addPlayerToPath(matchList.upper[i].participants[1])
-        playerList[bracketIDs.indexOf(matchList.upper[i].participants[1].id as number)].addPlayerToPath(matchList.upper[i].participants[0])
+        playerList[bracketIDs.indexOf(matchList.upper[i].participants[0].bracketID as unknown as number)].addPlayerToPath(matchList.upper[i].participants[1])
+        playerList[bracketIDs.indexOf(matchList.upper[i].participants[1].bracketID as unknown as number)].addPlayerToPath(matchList.upper[i].participants[0])
         
     }
 
      //set players from projected path in Winners
      for(let i=0;i<matchList.lower.length;i++)
      {
-         playerList[bracketIDs.indexOf(matchList.lower[i].participants[0].id as number)].addPlayerToPath(matchList.lower[i].participants[1])
-         playerList[bracketIDs.indexOf(matchList.lower[i].participants[1].id as number)].addPlayerToPath(matchList.lower[i].participants[0])
+         playerList[bracketIDs.indexOf(matchList.lower[i].participants[0].bracketID as number)].addPlayerToPath(matchList.lower[i].participants[1])
+         playerList[bracketIDs.indexOf(matchList.lower[i].participants[1].bracketID as number)].addPlayerToPath(matchList.lower[i].participants[0])
          
      }
 
