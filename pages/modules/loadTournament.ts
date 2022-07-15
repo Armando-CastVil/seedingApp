@@ -3,8 +3,10 @@ import urlToSlug from "./urlToSlug";
 import getCompetitorInfo from "./getCompetitorInfo";
 import Player from "./Player";
 import getAllSeedingInfo from "./getAllSeedingInfo";
+import Seed from "./Seed";
 
 export default async function loadTournament(key:string,url:string) {
+    console.log("yo!");
     variables.apiKey = key;
     variables.eventSlug = urlToSlug(url);
     if(variables.eventSlug == undefined) return;
@@ -17,6 +19,10 @@ export default async function loadTournament(key:string,url:string) {
     variables.carpools = [];
     variables.noCarpoolPlayers = [];
     variables.selectedPlayers = [];
+    variables.seeds = [];
+    for(let i = 0; i<variables.seeds.length; i++) {
+        variables.seeds.push(new Seed(null,i));
+    }
     for(let i = 0; i<carpoolIDs.length; i++) {
         variables.carpools.push([]);
     }
@@ -31,6 +37,7 @@ export default async function loadTournament(key:string,url:string) {
             }
         }
         if(!found) variables.noCarpoolPlayers.push(variables.seeding[i]);
+        variables.players[variables.seeding[i].ID] = variables.seeding[i];
     }
     for(let i = 0; i<variables.carpools.length; i++) {
         if(variables.carpools[i].length == 0) variables.carpools.splice(i,1);

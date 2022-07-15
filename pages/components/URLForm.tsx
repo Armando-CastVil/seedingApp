@@ -3,15 +3,17 @@ import getTourneyEntrants from "../getTourneyEntrants";
 import urlToSlug from "../modules/urlToSlug";
 import getCompetitorInfo from "../modules/getCompetitorInfo";
 import getList from "../modules/getList";
-import Competitor from "../modules/Competitor";
 import { timeStamp } from "console";
 import DisplayList from "./displayList";
 
+import Player from "../modules/Player";
+import loadTournament from "../modules/loadTournament";
+import { SMASHGG_API_KEY } from "../utility/config";
 
 export default class URLForm extends React.Component <{}, { value: string }>
   {
     isSubmitted: boolean;
-  list: Competitor[];
+  list: Player[];
  
     
     
@@ -38,6 +40,7 @@ export default class URLForm extends React.Component <{}, { value: string }>
     async handleSubmit(event: { preventDefault: () => void; }) {
       //send value to getlist
       event.preventDefault();
+      await loadTournament(SMASHGG_API_KEY,this.state.value);
       this.state=({value:urlToSlug(this.state.value)!})
       await this.listFIll()
       await this.setSubmitToTrue()

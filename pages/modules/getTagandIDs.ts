@@ -1,4 +1,5 @@
 import Player from "./Player";
+import Seed from "./Seed";
 
 export default function getTagsandIDs(entrantData:any):Player[]
 {
