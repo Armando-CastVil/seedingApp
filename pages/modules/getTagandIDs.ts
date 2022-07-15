@@ -1,7 +1,8 @@
-import Competitor from "./Competitor"
-export default function getTagsandIDs(entrantData:any):Competitor[]
+import Player from "./Player";
+
+export default function getTagsandIDs(entrantData:any):Player[]
 {
-    let entryList:Competitor[]=[];
+    let entryList:Player[]=[];
     async function processList()
     {
         await fillArray();
@@ -12,7 +13,7 @@ export default function getTagsandIDs(entrantData:any):Competitor[]
     {
         for(let i=0;i<entrantData.length;i++)
     {
-        let  entry= new Competitor(entrantData[i].participants[0].player.id.toString(),entrantData[i].participants[0].gamerTag,0,0)
+        let  entry= new Player(entrantData[i].participants[0].player.id.toString(),entrantData[i].participants[0].gamerTag,0,-1,null)
         entryList[i]=entry
         
     }   

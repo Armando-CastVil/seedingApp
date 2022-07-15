@@ -5,7 +5,7 @@ import getCompetitorInfo from "../modules/getCompetitorInfo";
 import getList from "../modules/getList";
 import Competitor from "../modules/Competitor";
 import { timeStamp } from "console";
-import DisplayList from "./DisplayList";
+import DisplayList from "./displayList";
 
 
 export default class URLForm extends React.Component <{}, { value: string }>
