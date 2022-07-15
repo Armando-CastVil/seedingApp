@@ -1,9 +1,9 @@
 import { Match,Participant } from "@g-loot/react-tournament-brackets/dist/src/types";
+import Competitor from "./Competitor";
 import  fillInitialBracket from "./fillInitialBracket";
 import { setPlayerInfo } from "./setPlayerInfo";
 import setProjectedPath from "./setProjectedPath";
 import { setResults } from "./setResults";
-import Player from "./Player";
 
 
 
@@ -20,7 +20,7 @@ export default async function getAllSeedingInfo(data:any)
     //initializing arrays
 
     //playerList is an array of competitor objects
-    var playerList:Player[]=[]
+    var playerList:Competitor[]=[]
     var setList:Match[]=[];
     var matchList:MatchStructure=
     {
@@ -36,9 +36,9 @@ export default async function getAllSeedingInfo(data:any)
     //this array holds only the sets that have results that have been set during a given round
     var setsWithResults:any=[]
 
-    //sets attributes for Player objects and stores them in the playerlist array
+    //sets attributes for Competitor objects and stores them in the playerlist array
     //also assigns their bracket ID to their corresponding index in the bracketID array
-    await setPlayerInfo(data).then((value: Player[])=>
+    await setPlayerInfo(data).then((value: Competitor[])=>
         {
             playerList=value
             for(let i=0;i<playerList.length;i++)

@@ -1,13 +1,13 @@
 import React,{ useState } from "react";
+import Competitor from "../modules/Competitor";
 import getList from "../modules/getList";
 import urlToSlug from "../modules/urlToSlug";
 import URLForm from "./URLForm";
-import Player from "../modules/Player";
 
 
 interface DisplayListState{
     url:string,
-    list:Player[]
+    list:Competitor[]
 
 }
 export default class DisplayList extends React.Component<DisplayListState, { }>
@@ -26,7 +26,7 @@ export default class DisplayList extends React.Component<DisplayListState, { }>
         return(
             <div>
                  {
-                this.props.list.map((e:Player)=>
+                this.props.list.map((e:Competitor)=>
                 <>
                 <div key={e.tag}>
                     <h3>ID: {e.ID}</h3>

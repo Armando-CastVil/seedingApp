@@ -1,12 +1,12 @@
 import React,{useState} from "react";
 import urlToSlug from "../modules/urlToSlug";
 import getList from "../modules/getList";
-import Player from "../modules/Player";
+import Competitor from "../modules/Competitor";
 export default function GetListFromURL()
 {
     const [url,setURL] = useState("placeholder");
     const [submitStatus,setSubmitStatus]=useState(false);
-    const [list,setList]=useState<Player[]>([]);
+    const [list,setList]=useState<Competitor[]>([]);
 
 
 
@@ -26,7 +26,7 @@ export default function GetListFromURL()
           {submitStatus?
             list.length==0?
             <h3>loading...</h3>
-            :list.map((e:Player)=>
+            :list.map((e:Competitor)=>
             <>
             <div key={e.ID.toString()}>
               <h3>{list.indexOf(e)+1}</h3>

@@ -3,8 +3,6 @@ import urlToSlug from "../modules/urlToSlug";
 import getList from "../modules/getList";
 import Competitor from "../modules/Competitor";
 import axios from "axios";
-import loadTournament from "../modules/loadTournament";
-import { SMASHGG_API_KEY } from "../utility/config";
 export default function SetPhaseGroups()
 {
     const [url,setURL] = useState("placeholder");
@@ -13,9 +11,8 @@ export default function SetPhaseGroups()
 
 
 
-    const handleSubmit= async (event: { preventDefault: () => void; })  => {
+    const handleSubmit= (event: { preventDefault: () => void; })  => {
         event.preventDefault();
-        await loadTournament(SMASHGG_API_KEY,url);
         APICall(urlToSlug(url)!).then((value)=>
         setPhaseGroup(value.data.event.phaseGroups[0].id))
         setSubmitStatus(true)
