@@ -26,12 +26,15 @@ export default  function fillInitialBracket(data:any,playerList:Competitor[],bra
         {
             var participant:Participant=
             {
-                id:playerList[bracketIDs.indexOf(data.phaseGroup.sets.nodes[i].slots[0].seed.id)].bracketID,
-                resultText: null,
-                isWinner:false,
-                status: null,
-                name:playerList[bracketIDs.indexOf(data.phaseGroup.sets.nodes[i].slots[0].seed.id)].tag
-                
+                bracketID: playerList[bracketIDs.indexOf(data.phaseGroup.sets.nodes[i].slots[0].seed.id)].bracketID,
+                isWinner: false,
+                tag: playerList[bracketIDs.indexOf(data.phaseGroup.sets.nodes[i].slots[0].seed.id)].tag,
+                smashggID: "",
+                rating: 0,
+                projectedPath: [],
+                seed: 0,
+                region: undefined,
+                carpool: undefined
             }
 
             participant.isWinner=false
@@ -42,12 +45,15 @@ export default  function fillInitialBracket(data:any,playerList:Competitor[],bra
         {
             var participant:Participant=
             {
-                id:playerList[bracketIDs.indexOf(data.phaseGroup.sets.nodes[i].slots[1].seed.id)].bracketID,
-                resultText: null,
-                isWinner:false,
-                status: null,
-                name:playerList[bracketIDs.indexOf(data.phaseGroup.sets.nodes[i].slots[1].seed.id)].tag
-                
+                bracketID: playerList[bracketIDs.indexOf(data.phaseGroup.sets.nodes[i].slots[1].seed.id)].bracketID,
+                isWinner: false,
+                tag: playerList[bracketIDs.indexOf(data.phaseGroup.sets.nodes[i].slots[1].seed.id)].tag,
+                smashggID: "",
+                rating: 0,
+                projectedPath: [],
+                seed: 0,
+                region: undefined,
+                carpool: undefined
             }
             participant.isWinner=false
             setList[i].participants.push(participant)

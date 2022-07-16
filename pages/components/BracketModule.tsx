@@ -19,7 +19,7 @@ export default function Bracket() {
             setMatchList(value)
         }))*/
         
-        getBracketData().then((value)=>
+        getBracketData(1).then((value)=>
         {
             setBracketData(value)
             //generateBracketPaths(value)
@@ -41,7 +41,6 @@ export default function Bracket() {
         
         setSubmitStatus(true)
         
-    
         
     }
     
