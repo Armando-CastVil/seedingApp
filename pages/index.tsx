@@ -4,9 +4,7 @@ import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import URLForm from './components/URLForm'
 import React  from 'react'
-import GetListFromURL from './components/GetListFromURL'
-import BracketDisplay from './components/BracketDisplay'
-import SetPhaseGroups from './components/SetPhaseGroups'
+import SeedingApp from './components/SeedingApp'
 
 
 
@@ -25,8 +23,8 @@ const Home: NextPage = () => {
 
       <main className={styles.main}>
 
-      
-     <SetPhaseGroups/>
+      <SeedingApp/>
+    
       
      
       

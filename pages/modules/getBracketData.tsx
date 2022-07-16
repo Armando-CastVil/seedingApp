@@ -1,13 +1,13 @@
 import axios from 'axios';
 
 
-export default async function getBracketData()
+export default async function getBracketData(phase:any)
 {
     //this variable is used to access pages beyond the first one for query results(eg. setsPage:2...etc.)
     var pageCounter=1
     //this will hold all the data from the query results, including those from beyond page 1
     var bracketData:any
-    var phaseGroup=1804692
+    var phaseGroup=phase
     var thereIsData=true
    
     

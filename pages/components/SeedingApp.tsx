@@ -1,38 +1,38 @@
-import React,{useState} from "react";
-import urlToSlug from "../modules/urlToSlug";
-import getList from "../modules/getList";
-import Competitor from "../modules/Competitor";
+
 import axios from "axios";
-interface phaseProps {
-  setPhase: (phase: any) => void;
+import { SetStateAction, useState } from "react";
+import urlToSlug from "../modules/urlToSlug";
+import DisplayParticipantList from "./DisplayParticipantList";
 
-}
-
-export default function SetPhaseGroups({setPhase}:any)
+export default function SeedingApp()
 {
+
+    const [phaseGroup,setPhaseGroup]=useState();
     const [url,setURL] = useState("placeholder");
     const [submitStatus,setSubmitStatus]=useState(false);
-    const [phaseGroup,setPhaseGroup]=useState();
-
-
 
     const handleSubmit= (event: { preventDefault: () => void; })  => {
         event.preventDefault();
         APICall(urlToSlug(url)!).then((value)=>
-        //setPhaseGroup(value.data.event.phaseGroups[0].id))
-        setPhase(value))
+        setPhaseGroup(value.data.event.phaseGroups[0].id))
         setSubmitStatus(true)
       
     }
 
-    
+   
+ 
 
     
 
-    return (
+      
+    
+
+    return(
         <div>
           {submitStatus?
-            <h3>{phaseGroup}</h3>
+           phaseGroup==undefined?
+           <h3>loading phase...</h3> 
+           :<DisplayParticipantList phase={phaseGroup}/>
             :<form onSubmit={e => { handleSubmit(e) }}>
             <label>
               URL:
@@ -42,7 +42,11 @@ export default function SetPhaseGroups({setPhase}:any)
             </form>
           }
         </div>
-  )
+        
+        
+    )
+   
+
 }
 
 function APICall(slug:string)
@@ -55,4 +59,3 @@ function APICall(slug:string)
         }
     )
 }
-      
