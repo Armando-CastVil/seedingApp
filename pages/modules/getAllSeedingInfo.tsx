@@ -55,18 +55,18 @@ export default async function getAllSeedingInfo(data:any)
     //fills the bracket from only the initially available data
     setList=fillInitialBracket(data,playerList,bracketIDs)
     let tempSetList=JSON.parse(JSON.stringify(setList))
-    console.log(setList)
+   // console.log(setList)
     
     for(let i=0;i<10;i++)
     {
-        console.log("ROUND: "+ i)
+       // console.log("ROUND: "+ i)
         await getResults(tempSetList,bracketIDs).then((value)=>
         {
             
             tempSetList=JSON.parse(JSON.stringify(value.setList))
-            console.log(tempSetList)
+           // console.log(tempSetList)
             setsWithResults=[...value.setsWithResults]
-            console.log(setsWithResults)
+            //console.log(setsWithResults)
         })
 
         tempSetList=JSON.parse(JSON.stringify(await setResults(data,playerList,bracketIDs,tempSetList,setsWithResults)))
@@ -82,9 +82,9 @@ export default async function getAllSeedingInfo(data:any)
         
     })
     matchList=await errorElimination(matchList)
-    playerList=setProjectedPath(matchList,playerList,bracketIDs)
-    console.log(playerList)
-    console.log(matchList)
+    //playerList=setProjectedPath(matchList,playerList,bracketIDs)
+    //console.log(playerList)
+    //console.log(matchList)
     return playerList
     
 

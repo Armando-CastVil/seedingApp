@@ -18,11 +18,12 @@ export default function DisplayParticipantList({phase}:any)
     const handleSubmit= (event: { preventDefault: () => void; })  => {
         getBracketData(phase).then((value)=>
         {
+            console.log(value)
             setBracketData(value)
             getAllSeedingInfo(value).then((seedingData)=>
             {
                 //setMatchList(seedingData.matchList)
-                console.log("sd: "+seedingData)
+                //console.log("sd: "+seedingData)
                 setPlayerList(seedingData)
             })
             
