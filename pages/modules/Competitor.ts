@@ -2,21 +2,26 @@ import { Participant } from "@g-loot/react-tournament-brackets/dist/src/types";
 
 export default class Competitor
 {
-    ID: string;
+    smashggID: string;
     tag: string;
     rating: number;
-    projectedPath:Participant[]=[];
-    bracketID:number;
     seed:number;
+    region:string|undefined;
+    carpool:number|string|undefined;
+    bracketID:number;
+    isWinner: boolean;
 
     
 
-    constructor(ID:string,tag:string,rating:number,bracketID:number,seed:number) {
-      this.ID=ID;
+    constructor(smashggID:string,bracketID:number,tag:string,rating:number,seed:number,region:string|undefined,carpool:number|string|undefined,isWinner:boolean) {
+      this.smashggID=smashggID;
+      this.bracketID=bracketID;
       this.tag=tag;
       this.rating=rating;
-      this.bracketID=bracketID;
       this.seed=seed;
+      this.region=region;
+      this.carpool=carpool
+      this.isWinner=isWinner
     }
     setRating(newRating:number)
     {
@@ -30,9 +35,4 @@ export default class Competitor
     {
       this.seed=seed
     }
-    addPlayerToPath(player:Participant)
-    {
-      this.projectedPath.push(player)
-    }
-
   }
