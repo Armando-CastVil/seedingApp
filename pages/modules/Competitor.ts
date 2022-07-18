@@ -3,12 +3,12 @@ import { Participant } from "@g-loot/react-tournament-brackets/dist/src/types";
 export default class Competitor
 {
     smashggID: string;
+    bracketID:number;
     tag: string;
     rating: number;
     seed:number;
     region:string|undefined;
     carpool:number|string|undefined;
-    bracketID:number;
     isWinner: boolean;
 
     
