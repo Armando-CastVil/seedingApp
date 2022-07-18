@@ -8,6 +8,7 @@ export default class Competitor
     projectedPath:Participant[]=[];
     bracketID:number;
     seed:number;
+    entrantId:number;
 
     
 
