@@ -10,6 +10,7 @@ export default class Competitor
     region:string|undefined;
     carpool:number|string|undefined;
     isWinner: boolean;
+    projectedPath:Competitor[]=[];
 
     
 
@@ -34,5 +35,9 @@ export default class Competitor
     setSeed(seed:number)
     {
       this.seed=seed
+    }
+    addPlayerToPath(player:Competitor)
+    {
+      this.projectedPath.push(player)
     }
   }
