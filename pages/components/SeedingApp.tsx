@@ -1,6 +1,9 @@
 
 import axios from "axios";
 import { SetStateAction, useState } from "react";
+import Competitor from "../modules/Competitor";
+import getBracketData from "../modules/getBracketData";
+import { setPlayerInfoFromPhase } from "../modules/setPlayerInfoFromPhase";
 import urlToSlug from "../modules/urlToSlug";
 import DisplayParticipantList from "./DisplayParticipantList";
 
@@ -10,14 +13,33 @@ export default function SeedingApp()
     const [phaseGroup,setPhaseGroup]=useState();
     const [url,setURL] = useState("placeholder");
     const [submitStatus,setSubmitStatus]=useState(false);
+    const [playerList,setPlayerList]=useState<Competitor[]>([])
 
-    const handleSubmit= (event: { preventDefault: () => void; })  => {
+    const handleSubmit= async (event: { preventDefault: () => void; })  => {
         event.preventDefault();
-        APICall(urlToSlug(url)!).then((value)=>
-        setPhaseGroup(value.data.event.phaseGroups[0].id))
-        setSubmitStatus(true)
-      
+        await APICall(urlToSlug(url)!).then((value)=>
+        {
+            
+            console.log(value.data.event.phaseGroups[0].id)
+            getBracketData(value.data.event.phaseGroups[0].id).then((value)=>
+        {
+    
+            setPlayerInfoFromPhase(value).then((value)=>
+            {
+                setPlayerList(value)
+            })
+            
+            
+        })
+            setSubmitStatus(true)
+        })
+        
+        /**/
+        
+        
+        
     }
+    
 
    
  
@@ -30,9 +52,7 @@ export default function SeedingApp()
     return(
         <div>
           {submitStatus?
-           phaseGroup==undefined?
-           <h3>loading phase...</h3> 
-           :<DisplayParticipantList phase={phaseGroup}/>
+            <DisplayParticipantList playerList={playerList}/>
             :<form onSubmit={e => { handleSubmit(e) }}>
             <label>
               URL:
@@ -40,7 +60,7 @@ export default function SeedingApp()
             </label>
             <input type="submit" value="Submit"  />
             </form>
-          }
+        }
         </div>
         
         

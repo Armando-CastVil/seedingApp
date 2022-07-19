@@ -6,7 +6,7 @@ export default async function setRating(entryList:Competitor[]):Promise<Competit
 {
         for(let i=0;i<entryList.length;i++)
         {
-            entryList[i].setRating(await getRating(entryList[i].ID))
+            entryList[i].setRating(await getRating(entryList[i].smashggID))
         }
         
         return entryList   

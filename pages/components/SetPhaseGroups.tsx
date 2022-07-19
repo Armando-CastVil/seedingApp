@@ -8,7 +8,7 @@ interface phaseProps {
 
 }
 
-export default function SetPhaseGroups({setPhase}:any)
+export default function SetPhaseGroups(setPhase: (phase: any) => void)
 {
     const [url,setURL] = useState("placeholder");
     const [submitStatus,setSubmitStatus]=useState(false);
@@ -19,8 +19,7 @@ export default function SetPhaseGroups({setPhase}:any)
     const handleSubmit= (event: { preventDefault: () => void; })  => {
         event.preventDefault();
         APICall(urlToSlug(url)!).then((value)=>
-        //setPhaseGroup(value.data.event.phaseGroups[0].id))
-        setPhase(value))
+        setPhaseGroup(value.data.event.phaseGroups[0].id))
         setSubmitStatus(true)
       
     }
