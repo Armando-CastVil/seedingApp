@@ -8,7 +8,7 @@ export default class Carpool
     
 
     
-
+    //constructor
     constructor(smashggID:string|number,carpoolMembers:Competitor[]) {
       this.carpoolName=smashggID;
       this.carpoolMembers=carpoolMembers;
