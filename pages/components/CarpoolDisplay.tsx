@@ -17,7 +17,7 @@ export default function CarpoolDisplay({carpools}:props)
     console.log("carpool display reached")
     console.log(carpools.length+" carpools")
     return(
-        <div>
+        <div className={styles.CarpoolDisplay}>
             { carpools.map((c:Carpool)=>
              <>
              <div  key={c.carpoolName}>

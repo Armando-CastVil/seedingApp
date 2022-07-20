@@ -6,6 +6,7 @@ import getAllSeedingInfo from "../modules/getAllSeedingInfo";
 import getBracketData from "../modules/getBracketData";
 import { setPlayerInfoFromPhase } from "../modules/setPlayerInfoFromPhase";
 import urlToSlug from "../modules/urlToSlug";
+import AddToCarpoolButton from "./AddToCarpoolButton";
 import styles from '/styles/Home.module.css'
 interface props {
     pList: Competitor[];
@@ -43,7 +44,7 @@ export default function DisplayParticipantList({pList,cList}:props)
             
                 {cList.map((carpool) => <option value={carpool.carpoolName}></option>)}
                 </select>
-                 <button onClick={e => { handleCarpool(e) }}> add to carpool</button> 
+                 <AddToCarpoolButton/>
 
              </div>
              <br></br>

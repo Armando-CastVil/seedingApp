@@ -6,6 +6,8 @@
 {
   border: 10px solid black;
   right: 90%;
+  background-color: fuchsia;
+  font-family: Papyrus;
 }
 .carpoolButton
 {
@@ -13,6 +15,10 @@ position:fixed;
 color:aquamarine;
 top: 10%;
 right: 90%;
+}
+.carpoolDisplay
+{
+  background-color: fuchsia;
 }
 
 .seedingApp
@@ -29,6 +35,7 @@ right: 90%;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background-color: aquamarine;
 }
 
 .footer {
