@@ -7,9 +7,15 @@ import getBracketData from "../modules/getBracketData";
 import { setPlayerInfoFromPhase } from "../modules/setPlayerInfoFromPhase";
 import urlToSlug from "../modules/urlToSlug";
 import styles from '/styles/Home.module.css'
+interface props {
+    
+    carpools: Carpool[];
+}
 
-export default function CarpoolDisplay(carpools:Carpool[])
+export default function CarpoolDisplay({carpools}:props)
 {
+    console.log("carpool display reached")
+    console.log(carpools.length+" carpools")
     return(
         <div>
             { carpools.map((c:Carpool)=>

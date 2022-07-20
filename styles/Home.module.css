@@ -4,11 +4,23 @@
 
 .playerList
 {
-  
-  
   border: 10px solid black;
+  right: 90%;
+}
+.carpoolButton
+{
+position:fixed;
+color:aquamarine;
+top: 10%;
+right: 90%;
 }
 
+.seedingApp
+{
+  background-color: fuchsia;
+  color:aquamarine
+  
+}
 .main {
   min-height: 100vh;
   padding: 4rem 0;
