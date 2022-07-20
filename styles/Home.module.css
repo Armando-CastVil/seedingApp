@@ -4,11 +4,29 @@
 
 .playerList
 {
-  
-  
   border: 10px solid black;
+  right: 90%;
+  background-color: fuchsia;
+  font-family: Papyrus;
+}
+.carpoolButton
+{
+position:fixed;
+color:aquamarine;
+top: 10%;
+right: 90%;
+}
+.carpoolDisplay
+{
+  background-color: fuchsia;
 }
 
+.seedingApp
+{
+  background-color: fuchsia;
+  color:aquamarine
+  
+}
 .main {
   min-height: 100vh;
   padding: 4rem 0;
@@ -17,6 +35,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background-color: aquamarine;
 }
 
 .footer {
