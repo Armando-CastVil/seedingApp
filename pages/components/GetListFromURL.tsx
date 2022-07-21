@@ -28,7 +28,7 @@ export default function GetListFromURL()
             <h3>loading...</h3>
             :list.map((e:Competitor)=>
             <>
-            <div key={e.ID.toString()}>
+            <div key={e.smashggID.toString()}>
               <h3>{list.indexOf(e)+1}</h3>
                 <h3>Tag: {e.tag}</h3>
                 <h3>Rating: {e.rating.toFixed(2)}</h3>
