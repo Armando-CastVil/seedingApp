@@ -1,4 +1,5 @@
 import { Participant } from "@g-loot/react-tournament-brackets/dist/src/types";
+import Carpool from "./Carpool";
 
 export default class Competitor
 {
@@ -8,13 +9,13 @@ export default class Competitor
     rating: number;
     seed:number;
     region:string|undefined;
-    carpool:number|string|undefined;
+    carpool:Carpool|undefined;
     isWinner: boolean;
     projectedPath:Competitor[]=[];
 
     
 
-    constructor(smashggID:string,bracketID:number,tag:string,rating:number,seed:number,region:string|undefined,carpool:number|string|undefined,isWinner:boolean) {
+    constructor(smashggID:string,bracketID:number,tag:string,rating:number,seed:number,region:string|undefined,carpool:Carpool|undefined,isWinner:boolean) {
       this.smashggID=smashggID;
       this.bracketID=bracketID;
       this.tag=tag;
@@ -40,4 +41,8 @@ export default class Competitor
     {
       this.projectedPath.push(player)
     }
+
+    
+
+
   }
