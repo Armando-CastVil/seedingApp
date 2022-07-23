@@ -1,14 +1,15 @@
+import Carpool from "../modules/Carpool";
 import Competitor from "../modules/Competitor";
 
-interface buttonProps
-{
-    player:Competitor;
+interface props {
+    player: Competitor;
+    addPlayerToCarpool: (arg: Competitor) => void
 }
-export default function AddToCarpoolButton({player}:buttonProps)
+export default function AddToCarpoolButton({player,addPlayerToCarpool}:props)
 {
 
 
 return(
-    <button color="red" onClick={e => { alert("added to carpool: "+player.tag) }}> add to carpool</button> 
+    <button color="red" onClick={e => { addPlayerToCarpool(player) }}> add to carpool</button> 
 )
 }

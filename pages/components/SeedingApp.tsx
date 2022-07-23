@@ -12,7 +12,13 @@ import CarpoolDisplay from "./CarpoolDisplay";
 interface props {
     pList: Competitor[];
     cList: Carpool[];
-    updateSelectedCarpool: (arg: Carpool) => void
+    updateSelectedCarpool: (arg: Carpool) => void;
+    addPlayerToCarpool:(player:Competitor)=>void;
+}
+interface carpoolDisplayProps
+{
+    pList: Competitor[];
+    cList: Carpool[];
 }
 export default function SeedingApp()
 {
@@ -25,13 +31,21 @@ export default function SeedingApp()
     const [selectedPlayer,setSelectedPlayer]=useState<Competitor>()
     const [selectedCarpool,setSelectedCarpool]=useState<Carpool>()
 
-    const updateSelectedPlayer = (player: Competitor):void => {
-        setSelectedPlayer(player)
-    }
 
     const updateSelectedCarpool = (carpool: Carpool):void => {
     alert("selected carpool is:"+carpool.carpoolName)
     setSelectedCarpool(carpool)
+    }
+    const addPlayerToCarpool=(player:Competitor):void=>
+    {
+        alert("added to carpool: "+selectedCarpool?.carpoolName+": "+player.tag)
+        selectedCarpool!.addCarpoolMember(player)
+        player.carpool=selectedCarpool!
+        setSelectedPlayer(player)
+        setCarpoolCount(carpoolList.length)
+        
+       
+
     }
     
     
@@ -89,7 +103,7 @@ export default function SeedingApp()
                 {submitStatus?
                     <div className={styles.SeedingApp} >
                         <div className={styles.SeedingApp}>
-                        <DisplayParticipantList pList={playerList} cList={carpoolList} updateSelectedCarpool={updateSelectedCarpool}/>
+                        <DisplayParticipantList pList={playerList} cList={carpoolList} updateSelectedCarpool={updateSelectedCarpool} addPlayerToCarpool={addPlayerToCarpool}/>
                         <CarpoolDisplay cList={carpoolList} pList={playerList} setPlayerFromButton={function (player: Competitor): void {
                         
                         } }/>

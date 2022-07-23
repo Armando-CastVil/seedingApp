@@ -13,6 +13,7 @@ interface props {
     pList: Competitor[];
     cList: Carpool[];
     updateSelectedCarpool: (arg: Carpool) => void
+    addPlayerToCarpool:(player:Competitor)=>void;
 }
 
 interface CarpoolDropDownMenuProps {
@@ -22,10 +23,11 @@ interface CarpoolDropDownMenuProps {
 interface buttonProps
 {
     player:Competitor;
+    addPlayerToCarpool:(arg:Carpool,player:Competitor)=>void;
 
 }
 
-export default function DisplayParticipantList({pList,cList,updateSelectedCarpool}:props)
+export default function DisplayParticipantList({pList,cList,updateSelectedCarpool,addPlayerToCarpool}:props)
 {
 
 
@@ -49,8 +51,10 @@ export default function DisplayParticipantList({pList,cList,updateSelectedCarpoo
                <h3>{pList.indexOf(e)+1}</h3>
                  <h3>Tag: {e.tag}</h3>
                  <h3>Rating: {e.rating.toFixed(2)}</h3>
+                 <h3>carpool:{e.carpool?.carpoolName}</h3>
                  <CarpoolDropDownMenu cList={cList} updateSelectedCarpool={updateSelectedCarpool}/>
-                 <AddToCarpoolButton player={e}/>
+                 <AddToCarpoolButton player={e} addPlayerToCarpool={addPlayerToCarpool}/>
+                 
 
              </div>
              <br></br>
