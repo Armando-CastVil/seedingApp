@@ -12,13 +12,15 @@
 .carpoolButton
 {
 position:fixed;
-color:aquamarine;
+color:red;
 top: 10%;
 right: 90%;
 }
-.carpoolDisplay
+.CarpoolDisplay
 {
-  background-color: fuchsia;
+  background-color: yellowgreen;
+  border: 10px solid blue;
+  font-family: Papyrus;
 }
 
 .seedingApp

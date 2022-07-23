@@ -22,11 +22,11 @@ export default function CarpoolDisplay({pList,cList,setPlayerFromButton}:props)
             <h3>carpools:</h3>
             { cList.map((c:Carpool)=>
              <>
-             <div  key={c.carpoolName}>
-               <h3>{c.carpoolName}</h3>
+             <div className={styles.CarpoolDisplay} key={c.carpoolName}>
+               <h3 className={styles.CarpoolDisplay} >{c.carpoolName}</h3>
                 {c.carpoolMembers.map((p:Competitor)=>
-                <div>
-                    <h2>{p.tag}</h2>
+                <div className={styles.CarpoolDisplay}>
+                    <h6 className={styles.CarpoolDisplay}>{p.tag}</h6>
                 </div>
                 )
                 }

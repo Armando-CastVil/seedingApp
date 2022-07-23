@@ -9,6 +9,7 @@ import urlToSlug from "../modules/urlToSlug";
 import styles from '/styles/Home.module.css'
 import DisplayParticipantList from "./DisplayParticipantList";
 import CarpoolDisplay from "./CarpoolDisplay";
+import GenerateBracketButton from "./GenerateBracketButton";
 interface props {
     pList: Competitor[];
     cList: Carpool[];
@@ -31,9 +32,6 @@ export default function SeedingApp()
     const [selectedPlayer,setSelectedPlayer]=useState<Competitor>()
     const [selectedCarpool,setSelectedCarpool]=useState<Carpool>()
 
-    const updateSelectedPlayer = (player: Competitor):void => {
-        setSelectedPlayer(player)
-    }
 
     const updateSelectedCarpool = (carpool: Carpool):void => {
     alert("selected carpool is:"+carpool.carpoolName)
@@ -43,6 +41,7 @@ export default function SeedingApp()
     {
         alert("added to carpool: "+selectedCarpool?.carpoolName+": "+player.tag)
         selectedCarpool!.addCarpoolMember(player)
+        player.carpool=selectedCarpool!
         setSelectedPlayer(player)
         setCarpoolCount(carpoolList.length)
         
@@ -50,7 +49,11 @@ export default function SeedingApp()
 
     }
     
-    
+    const generateBracket=(playerList:Competitor[]):void=>
+    {
+        //rest of function goes here
+        console.log(playerList)
+    }
     
   
 
@@ -105,13 +108,14 @@ export default function SeedingApp()
                 {submitStatus?
                     <div className={styles.SeedingApp} >
                         <div className={styles.SeedingApp}>
+                        <GenerateBracketButton playerList={playerList} generateBracket={generateBracket} />
                         <DisplayParticipantList pList={playerList} cList={carpoolList} updateSelectedCarpool={updateSelectedCarpool} addPlayerToCarpool={addPlayerToCarpool}/>
                         <CarpoolDisplay cList={carpoolList} pList={playerList} setPlayerFromButton={function (player: Competitor): void {
                         
                         } }/>
                         </div>
                         <div className={styles.carpoolButton}>
-                            <button onClick={e => { createCarpool(e) }}> create carpool</button> 
+                            <button className={styles.carpoolButton} onClick={e => { createCarpool(e) }}> create carpool</button> 
                         </div>
                     </div>
                     :<form onSubmit={e => { handleSubmit(e) }}>
