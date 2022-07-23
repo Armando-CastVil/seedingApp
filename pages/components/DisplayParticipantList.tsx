@@ -1,5 +1,5 @@
 import axios from "axios";
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import Carpool from "../modules/Carpool";
 import Competitor from "../modules/Competitor";
 import getAllSeedingInfo from "../modules/getAllSeedingInfo";
@@ -12,23 +12,36 @@ import styles from '/styles/Home.module.css'
 interface props {
     pList: Competitor[];
     cList: Carpool[];
+    updateSelectedCarpool: (arg: Carpool) => void
 }
 
-export default function DisplayParticipantList({pList,cList}:props)
+interface CarpoolDropDownMenuProps {
+    cList: Carpool[],
+    updateSelectedCarpool: (arg: Carpool) => void
+}
+interface buttonProps
+{
+    player:Competitor;
+
+}
+
+export default function DisplayParticipantList({pList,cList,updateSelectedCarpool}:props)
 {
 
 
     const [carpool,setCarpool]=useState<Carpool>()
     const [player,setPlayer]=useState<Competitor>()
+    const [selectedCarpool, setSelectedCarpool] = useState<Carpool>()
     const handleCarpool= (event: { preventDefault: () => void; })  => {
         carpool?.carpoolMembers.push(player!)
       
     }
 
-    let selectCarpool = (c:any) => {
-        setCarpool(c.target.value)
-    }
-        
+
+    
+    useEffect(() => {
+    setSelectedCarpool(carpool)
+    },[carpool])
 
     return(
         <div >
@@ -40,8 +53,8 @@ export default function DisplayParticipantList({pList,cList}:props)
                <h3>{pList.indexOf(e)+1}</h3>
                  <h3>Tag: {e.tag}</h3>
                  <h3>Rating: {e.rating.toFixed(2)}</h3>
-                 <CarpoolDropDownMenu cList={cList}/>
-                 <AddToCarpoolButton/>
+                 <CarpoolDropDownMenu cList={cList} updateSelectedCarpool={updateSelectedCarpool}/>
+                 <AddToCarpoolButton player={e}/>
 
              </div>
              <br></br>

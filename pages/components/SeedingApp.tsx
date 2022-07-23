@@ -12,6 +12,7 @@ import CarpoolDisplay from "./CarpoolDisplay";
 interface props {
     pList: Competitor[];
     cList: Carpool[];
+    updateSelectedCarpool: (arg: Carpool) => void
 }
 export default function SeedingApp()
 {
@@ -20,11 +21,22 @@ export default function SeedingApp()
     const [submitStatus,setSubmitStatus]=useState(false);
     const [playerList,setPlayerList]=useState<Competitor[]>([])
     const [carpoolList,setCarpoolList]=useState<Carpool[]>([])
-    
-    const props:props = {
-        pList:playerList,
-        cList:carpoolList
+    const [carpoolCount,setCarpoolCount]=useState<number>(0)
+    const [selectedPlayer,setSelectedPlayer]=useState<Competitor>()
+    const [selectedCarpool,setSelectedCarpool]=useState<Carpool>()
+
+    const updateSelectedPlayer = (player: Competitor):void => {
+        setSelectedPlayer(player)
     }
+
+    const updateSelectedCarpool = (carpool: Carpool):void => {
+    alert("selected carpool is:"+carpool.carpoolName)
+    setSelectedCarpool(carpool)
+    }
+    
+    
+    
+  
 
 
     const handleSubmit= async (event: { preventDefault: () => void; })  => {
@@ -52,12 +64,16 @@ export default function SeedingApp()
         
     }
     function createCarpool(e:any) {
-        let carpoolAlias="carpool "+carpoolList.length.toString()
-        carpoolList.push(new Carpool(carpoolAlias,[playerList[1],playerList[2],playerList[3]]))
-        console.log("create carpool reached")
-        console.log(carpoolList.length)
+        let carpoolAlias="carpool "+carpoolCount.toString()
+      
+        let tempCarpool=new Carpool(carpoolAlias,[])
+        carpoolList.push(tempCarpool)
+        setCarpoolCount(carpoolList.length)
+        alert("carpool created"+ carpoolList[carpoolList.length-1].carpoolName)
         setCarpoolList(carpoolList)
     }
+
+    
     
 
    
@@ -73,8 +89,10 @@ export default function SeedingApp()
                 {submitStatus?
                     <div className={styles.SeedingApp} >
                         <div className={styles.SeedingApp}>
-                        <DisplayParticipantList pList={playerList} cList={carpoolList}/>
-                        <CarpoolDisplay carpools={carpoolList}/>
+                        <DisplayParticipantList pList={playerList} cList={carpoolList} updateSelectedCarpool={updateSelectedCarpool}/>
+                        <CarpoolDisplay cList={carpoolList} pList={playerList} setPlayerFromButton={function (player: Competitor): void {
+                        
+                        } }/>
                         </div>
                         <div className={styles.carpoolButton}>
                             <button onClick={e => { createCarpool(e) }}> create carpool</button> 

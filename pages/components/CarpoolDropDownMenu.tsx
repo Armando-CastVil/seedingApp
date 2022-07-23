@@ -1,21 +1,43 @@
-import { useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import Carpool from "../modules/Carpool";
 
-interface props {
-    
-    cList: Carpool[];
-}
-export default function CarpoolDropDownMenu({cList}:props)
+interface CarpoolDropDownMenuProps {
+    cList: Carpool[],
+    updateSelectedCarpool: (arg: Carpool) => void
+  }
+export default function CarpoolDropDownMenu({cList,updateSelectedCarpool}:CarpoolDropDownMenuProps)
 {
+    const [selectedCarpool, setSelectedCarpool] = useState<Carpool>()
+    const [value, setValue] = useState<string>("select carpool");
     const [carpool,setCarpool]=useState<Carpool>()
+    useEffect(() => {
+    setSelectedCarpool(carpool)
+    },[carpool])
+    
+    
     let selectCarpool = (c:any) => {
         setCarpool(c.target.value)
+        updateSelectedCarpool(cList[0])
+        alert(c.carpoolName)
+        console.log("c is:")
+        console.log(c.target.value)
     }
+
+    const handleChange = (event: { target: { value: SetStateAction<string>; }; }) => {
+        setValue(event.target.value);
+        const tempCarpool = cList.find((obj) => {
+            return obj.carpoolName === event.target.value;
+          });
+        console.log("tempcarpool:")
+        console.log(tempCarpool)
+        updateSelectedCarpool(tempCarpool!)
+      };
+
     return(
-        <select onChange={selectCarpool}> 
-                 <option value="⬇️ Select a carpool ⬇️"> -- Select a carpool -- </option>
+        <select onChange={handleChange}> 
+                 <option value={value}> -- Select a carpool -- </option>
             
-                {cList.map((carpool) => <option value={carpool.carpoolName}></option>)}
+                {cList.map((carpool) => <option value={carpool.carpoolName}>{carpool.carpoolName}</option>)}
                 </select>
     )
 }
