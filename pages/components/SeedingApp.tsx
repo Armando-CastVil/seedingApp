@@ -31,9 +31,6 @@ export default function SeedingApp()
     const [selectedPlayer,setSelectedPlayer]=useState<Competitor>()
     const [selectedCarpool,setSelectedCarpool]=useState<Carpool>()
 
-    const updateSelectedPlayer = (player: Competitor):void => {
-        setSelectedPlayer(player)
-    }
 
     const updateSelectedCarpool = (carpool: Carpool):void => {
     alert("selected carpool is:"+carpool.carpoolName)
@@ -43,6 +40,7 @@ export default function SeedingApp()
     {
         alert("added to carpool: "+selectedCarpool?.carpoolName+": "+player.tag)
         selectedCarpool!.addCarpoolMember(player)
+        player.carpool=selectedCarpool!
         setSelectedPlayer(player)
         setCarpoolCount(carpoolList.length)
         
