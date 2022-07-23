@@ -1,172 +1,223 @@
 import { initializeApp } from "firebase/app";
 import { getDatabase,ref,get } from "firebase/database";
 import { firebaseConfig } from "../utility/firebaseConfig";
+import Competitor from "./Competitor";
+import Carpool from "./Carpool";
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getDatabase();
-const conservativity = 1000;
+var conservativity = 1000;
+var carpoolFactor = 200;
+var oldSeeding:seedPlayer[];
+var newSeeding:seedPlayer[];
 
-//all paramaters are 0 indexed
-export default async function getSeparation(projectedMatchesArray:number[][], ids:string[], ratings:number[], carpools:number[][]): Promise<number[]> {
-    const maximumFunctionRuntime:number = 10000;
+type seed = {
+    projectedPath:seed[];
+	seedNum:number;//0-indexed
+}
+
+type seedPlayer = {
+    competitor:Competitor;
+    oldSeed:number;//0-indexed
+    setHistories: {[opponent: string]: number};
+    seed:seed;
+    conflictFactor:number;//sum of projected set histories, relative to original seeding
+    seedDistance:number;//geometric distance from actual rating to seeded rating multiplied by conservativity
+}
+
+export default async function getSeparation(competitors:Competitor[], carpools: Carpool[], maximumFunctionRuntime?: number, conservativityParam?: number, carpoolFactorParam?: number) {
+
+    //setup
+    if(typeof maximumFunctionRuntime === "undefined") {
+        maximumFunctionRuntime = 3000;
+    }
+    if(typeof conservativityParam !== "undefined") {
+        conservativity = conservativityParam;
+    } 
+    if(typeof carpoolFactorParam !== "undefined") {
+        carpoolFactor = carpoolFactorParam;
+    }
+    conservativity = conservativity as number;
+    maximumFunctionRuntime = maximumFunctionRuntime as number;
     const start:number = Date.now();
     const end:number = start+maximumFunctionRuntime;
-    let players: ({
-        id: string, 
-        rating: number, 
-        newSeed: number, 
-        ogSeed: number,
-        histories: {[opponent: number]:number}, 
-        ogProjectedMatches: number[],
-        projectedSetHistories: number,
-        geoDistFromOGseed: number,
-        carpool: Set<number>
-    })[] = []
-    let ogSeeds:number[] = [];
-    for(let i = 0; i<ids.length-1; i++) {
-        players.push({
-            id: ids[i+1],
-            rating: ratings[i+1],
-            newSeed: i,
-            ogSeed: i,
-            histories: {},
-            ogProjectedMatches: [],
-            projectedSetHistories: 0,
-            geoDistFromOGseed: conservativity,
-            carpool: new Set<number>()
-        });
-        ogSeeds.push(i);
+
+    //first initialize seed objs
+    let seeds:seed[] = []
+    for(let i = 0; i<competitors.length; i++) {
+        let nextSeed:seed = {
+            projectedPath: [],
+            seedNum: i
+        }
+        seeds.push(nextSeed);
     }
-    for(let i = 0;i<projectedMatchesArray.length; i++) {
-        players[projectedMatchesArray[i][0]-1].ogProjectedMatches.push(projectedMatchesArray[i][1]-1);
-        players[projectedMatchesArray[i][1]-1].ogProjectedMatches.push(projectedMatchesArray[i][0]-1);
-    }
-    for(let i = 0; i<carpools.length; i++) {
-        let carpool = carpools[i];
-        for(let j = 0; j<carpool.length; j++) {
-            for(let k = j+1; k<carpool.length; j++) {
-                players[carpool[j]].carpool.add(carpool[k]);
-                players[carpool[k]].carpool.add(carpool[j]);
-            }
+
+    //add projected paths to seeds
+    for(let i = 0; i<competitors.length; i++) {
+        for(let j = 0; j<competitors[i].projectedPath.length; j++) {
+            let opponentSeedNum = competitors[i].projectedPath[j].seed-1;
+            //-1 because it has to be 0 indexed
+            seeds[i].projectedPath.push(seeds[opponentSeedNum]);
         }
     }
-    let heuristicContributions:any[] = [];
-    for(let i = 0; i<players.length; i++) {
-        players[i].projectedSetHistories = await getProjectedSetHistories(i,ogSeeds,players);
-        heuristicContributions.push(players[i]);
+
+    //recreate the initial seeding
+    oldSeeding = [];
+    newSeeding = [];
+    for(let i = 0; i<competitors.length; i++) {
+        let newPlayer:seedPlayer = {
+            competitor: competitors[i],
+            oldSeed: i,
+            seed: seeds[i],
+            setHistories: {},
+            conflictFactor: 0,//will set later
+            seedDistance: conservativity,
+        }
+        oldSeeding.push(newPlayer);
+        newSeeding.push(newPlayer);
     }
-    let hueristicSort = (a:any,b:any) => 
-          b.projectedSetHistories
-        + b.geoDistFromOGseed
-        - a.projectedSetHistories 
-        - a.geoDistFromOGseed;
-    heuristicContributions.sort(hueristicSort);
-    let currHC = 0;
-    let player1 = heuristicContributions[currHC];
-    while(Date.now()<end && player1.projectedSetHistories + player1.geoDistFromOGseed > 0) {
-        player1 = heuristicContributions[currHC];
-        if(player1.ogSeed<4) {
-            currHC++;
+
+    //make a list of players sorted by their score aka how much they contribute to the heuristic
+    //score is their conflictFactor + seedDistance
+    let scoreList:seedPlayer[] = [];
+    for(let i = 0; i<oldSeeding.length; i++) {
+        oldSeeding[i].conflictFactor = await getConflictFactor(oldSeeding[i]);
+        scoreList.push(oldSeeding[i]);
+    }
+    let scoreSort = (a:seedPlayer, b:seedPlayer) => 
+        b.conflictFactor - a.conflictFactor
+        + b.seedDistance - a.seedDistance;
+    scoreList.sort(scoreSort);
+
+    //main loop
+    let scoreListIdx = 0;
+    //player 1 is the high score player we want to find someone to swap with
+    //player 2 is the person we are considering swapping with player 1
+    let numLoops = 0;
+    for(let player1:seedPlayer = scoreList[scoreListIdx];
+        Date.now()<end //go until we run out of time
+        && player1.conflictFactor + player1.seedDistance > 1; //or its seeded perfectly
+        player1 = scoreList[scoreListIdx]) {
+        numLoops++;
+
+        //seeds 1-4 will never swap
+        if(player1.oldSeed<4) {
+            scoreListIdx++;
             continue;
         }
-        let lastPowerOf2 = 2 ** Math.floor(Math.log2(player1.newSeed));
+
+        //setup player 2 search boundaries
+        let lastPowerOf2 = 2 ** Math.floor(Math.log2(player1.seed.seedNum));
         let ceiling:number;//exclusive
         let floor:number;//inclusive
-        if(player1.ogSeed>=lastPowerOf2*1.5) {
+        if(player1.oldSeed >= lastPowerOf2*1.5) {
             ceiling = 2*lastPowerOf2;
             floor = 1.5*lastPowerOf2;
         } else {
             ceiling = 1.5*lastPowerOf2;
             floor = lastPowerOf2;
         }
-        let upperIndex:number = player1.ogSeed + 1;
-        let lowerIndex:number = player1.ogSeed - 1;
-        let i:number = player1.ogSeed;
+
         let swapMade:boolean = false;
-        while(player1.geoDistFromOGseed + 2*player1.projectedSetHistories 
-            > getGeoDist(i,player1.ogSeed,players)**2) {
-            let player2 = players[ogSeeds[i]];
-            if(player1 == player2) continue;
-            let heuristicChange = - player1.projectedSetHistories
-                                  - player2.projectedSetHistories
-                                  - player1.geoDistFromOGseed
-                                  - player2.geoDistFromOGseed;
-            await swap(player1,player2,ogSeeds,players);
-            heuristicChange +=  player1.projectedSetHistories
-                            +   player2.projectedSetHistories
-                            +   player1.geoDistFromOGseed
-                            +   player2.geoDistFromOGseed;
-            if(heuristicChange > 0) swap(player1, player2, ogSeeds, players);
-            else {
-                swapMade = true;
-                break;
+        let upperIdx:number = player1.oldSeed + 1;
+        let lowerIdx:number = player1.oldSeed - 1;
+        let currIdx :number = player1.oldSeed;
+
+        while(player1.seedDistance + 2*player1.conflictFactor > getGeoDist(currIdx,player1.oldSeed)) {
+            let player2:seedPlayer = newSeeding[currIdx];
+            if(player1 != player2) {
+                //find out what the score would be if we swapped
+                let scoreChange = - player1.conflictFactor
+                                  - player2.conflictFactor
+                                  - player1.seedDistance
+                                  - player2.seedDistance;
+                await swap(player1,player2);
+                scoreChange += player1.conflictFactor
+                            +  player2.conflictFactor
+                            +  player1.seedDistance
+                            +  player2.seedDistance;
+
+                //if it was a bad swap, swap back
+                if(scoreChange > 0) await swap(player1,player2);
+                else {
+                    swapMade = true;
+                    break;
+                }
             }
-            if(upperIndex >= ceiling && lowerIndex<floor) break;
-            else if(upperIndex >= ceiling) {
-                i = lowerIndex;
-                lowerIndex--;
-            } else if(lowerIndex < floor) {
-                i = upperIndex;
-                upperIndex++;
+            //find next idx
+            if(upperIdx >= ceiling && lowerIdx < floor) break;
+            else if(upperIdx >= ceiling) {
+                currIdx = lowerIdx;
+                lowerIdx--;
+            } else if(lowerIdx < floor) {
+                currIdx = upperIdx;
+                upperIdx++;
             } else {
-                let upperDist = getGeoDist(player1.ogSeed,upperIndex,players);
-                let lowerDist = getGeoDist(player1.ogSeed,lowerIndex,players);
+                let upperDist = getGeoDist(player1.oldSeed,upperIdx);
+                let lowerDist = getGeoDist(player1.oldSeed,lowerIdx);
                 if(lowerDist>upperDist) {
-                    i = upperIndex
-                    upperIndex++;
+                    currIdx = upperIdx;
+                    upperIdx++;
                 } else {
-                    i = lowerIndex;
-                    lowerIndex--;
+                    currIdx = lowerIdx;
+                    lowerIdx--;
                 }
             }
         }
         if(swapMade) {
-            currHC = 0;
-            heuristicContributions.sort(hueristicSort);
-        }
-        else currHC++;
+            scoreListIdx = 0;
+            scoreList.sort(scoreSort);
+        } else scoreListIdx++;
     }
-    return ogSeeds;
+    console.log("separation took "+numLoops+" loops and "+(Date.now()-start)+" ms");
+    return newSeeding;
 }
 
-async function swap(p1:any, p2:any, ogSeeds:number[], players:any) {
-    let temp:number = p1.newSeed;
-    p1.newSeed = p2.newSeed;
-    p2.newSeed = temp;
-    ogSeeds[p1.newSeed] = p1.ogSeed;
-    ogSeeds[p2.newSeed] = p2.ogSeed;
-    p1.projectedSetHistories = await getProjectedSetHistories(p1,ogSeeds,players);
-    p2.projectedSetHistories = await getProjectedSetHistories(p2,ogSeeds,players);
-    p1.geoDistFromOGseed = getGeoDist(p1.newSeed, p1.ogSeed, players)**2;
-    p2.geoDistFromOGseed = getGeoDist(p2.newSeed, p2.ogSeed, players)**2;
-}
-
-function getGeoDist(seed1:number, seed2: number, players:any):number {
-    let d1 = players[seed1].rating/players[seed2].rating;
-    let d2 = players[seed2].rating/players[seed1].rating;
-    return Math.max(d1,d2)*conservativity;
-}
-
-async function getProjectedSetHistories(player:any, ogSeeds:number[], players:any):Promise<number> {
+async function getConflictFactor(player:seedPlayer): Promise<number> {
     let toReturn = 0;
-    let projectedOpponents = players[player.newSeed].ogProjectedMatches;
-    for(let i = 0; i<projectedOpponents; i++) {
-        let opponent = players[ogSeeds[projectedOpponents[i]]];
-        if(!player.histories.has(opponent.ogSeed)) {
-            let history = (await get(ref(db,"players/"+player.id+"/sets/"+opponent.id))).val();
+    let projectedSeeds = player.seed.projectedPath;
+    for(let i = 0; i<projectedSeeds.length; i++) {
+        let opponent = newSeeding[projectedSeeds[i].seedNum];
+        if(!player.setHistories.hasOwnProperty(opponent.competitor.smashggID)) {
+            let history = (await get(ref(db,"players/"+player.competitor.smashggID+"/sets/"+opponent.competitor.smashggID))).val();
             if(history == undefined) {
-                player.histories[opponent.ogSeed] = 0;
-                opponent.histories[player.ogSeed] = 0;
+                player.setHistories[opponent.competitor.smashggID] = 0;
+                opponent.setHistories[player.competitor.smashggID] = 0;
             } else {
-                player.histories[opponent.ogSeed] = history;
-                opponent.histories[player.ogSeed] = history;
+                player.setHistories[opponent.competitor.smashggID] = history;
+                opponent.setHistories[player.competitor.smashggID] = history;
             }
-            if(player.carpool.has(opponent.ogSeed))  {
-                player.histories[opponent.ogSeed] += 200;
-                opponent.histories[player.ogSeed] += 200;
+            if(player.competitor.carpool == opponent.competitor.carpool) {
+                player.setHistories[opponent.competitor.smashggID] += carpoolFactor;
+                opponent.setHistories[player.competitor.smashggID] += carpoolFactor;
             }
         }
-        toReturn += (player.histories[opponent.ogSeed])**2/projectedOpponents.length;
+        toReturn += (player.setHistories[opponent.competitor.smashggID] ** 2)/projectedSeeds.length;
     }
     return toReturn;
+}
+
+function getGeoDist(seed1: number, seed2: number) {
+    let dist = oldSeeding[seed1].competitor.rating/oldSeeding[seed2].competitor.rating;
+    if(dist>1) return dist*conservativity;
+    else return conservativity/dist;
+}
+
+async function swap(player1:seedPlayer, player2: seedPlayer) {
+    //swap them in the array
+    let p1Idx = player1.seed.seedNum;
+    let p2Idx = player2.seed.seedNum;
+    newSeeding[p1Idx] = player2;
+    newSeeding[p2Idx] = player1;
+
+    //swap their seed objects
+    let temp = player1.seed;
+    player1.seed = player2.seed;
+    player2.seed = temp;
+
+    //update scores
+    player1.conflictFactor = await getConflictFactor(player1);
+    player2.conflictFactor = await getConflictFactor(player2);
+    player1.seedDistance = getGeoDist(player1.oldSeed,player1.seed.seedNum);
+    player2.seedDistance = getGeoDist(player2.oldSeed,player2.seed.seedNum);
 }

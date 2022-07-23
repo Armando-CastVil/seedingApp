@@ -31,17 +31,13 @@ export default function DisplayParticipantList({pList,cList,updateSelectedCarpoo
 
     const [carpool,setCarpool]=useState<Carpool>()
     const [player,setPlayer]=useState<Competitor>()
-    const [selectedCarpool, setSelectedCarpool] = useState<Carpool>()
     const handleCarpool= (event: { preventDefault: () => void; })  => {
         carpool?.carpoolMembers.push(player!)
       
     }
 
 
-    
-    useEffect(() => {
-    setSelectedCarpool(carpool)
-    },[carpool])
+
 
     return(
         <div >
