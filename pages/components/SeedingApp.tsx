@@ -9,7 +9,9 @@ import urlToSlug from "../modules/urlToSlug";
 import styles from '/styles/Home.module.css'
 import DisplayParticipantList from "./DisplayParticipantList";
 import CarpoolDisplay from "./CarpoolDisplay";
-import GenerateBracketButton from "./GenerateBracketButton";
+import GenerateBracketButton from "./UpdateBracketButton";
+import assignBracketIds from "../modules/assignBracketIds";
+
 interface props {
     pList: Competitor[];
     cList: Carpool[];
@@ -31,6 +33,7 @@ export default function SeedingApp()
     const [carpoolCount,setCarpoolCount]=useState<number>(0)
     const [selectedPlayer,setSelectedPlayer]=useState<Competitor>()
     const [selectedCarpool,setSelectedCarpool]=useState<Carpool>()
+    const [apiData,setApiData]=useState<any>()
 
 
     const updateSelectedCarpool = (carpool: Carpool):void => {
@@ -49,10 +52,9 @@ export default function SeedingApp()
 
     }
     
-    const generateBracket=(playerList:Competitor[]):void=>
+    const updateBracket=(playerList:Competitor[]):void=>
     {
-        //rest of function goes here
-        console.log(playerList)
+        setPlayerList(assignBracketIds(apiData,playerList))    
     }
     
   
@@ -62,7 +64,7 @@ export default function SeedingApp()
         event.preventDefault();
         await APICall(urlToSlug(url)!).then((value)=>
         {
-            
+            setApiData(value)
             console.log(value.data.event.phaseGroups[0].id)
             getBracketData(value.data.event.phaseGroups[0].id).then((value)=>
         {
@@ -108,7 +110,7 @@ export default function SeedingApp()
                 {submitStatus?
                     <div className={styles.SeedingApp} >
                         <div className={styles.SeedingApp}>
-                        <GenerateBracketButton playerList={playerList} generateBracket={generateBracket} />
+                        <GenerateBracketButton playerList={playerList} updateBracket={updateBracket} />
                         <DisplayParticipantList pList={playerList} cList={carpoolList} updateSelectedCarpool={updateSelectedCarpool} addPlayerToCarpool={addPlayerToCarpool}/>
                         <CarpoolDisplay cList={carpoolList} pList={playerList} setPlayerFromButton={function (player: Competitor): void {
                         
@@ -140,6 +142,7 @@ function APICall(slug:string)
     return axios.get('api/getPhaseGroups',{params:{slug:slug}}).then(({data})=>
         {
             console.log("getting phaseGroups")
+            console.log(data)
             return data
         }
     )
