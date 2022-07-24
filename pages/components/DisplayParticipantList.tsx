@@ -7,7 +7,7 @@ import getBracketData from "../modules/getBracketData";
 import { setPlayerInfoFromPhase } from "../modules/setPlayerInfoFromPhase";
 import urlToSlug from "../modules/urlToSlug";
 import AddToCarpoolButton from "./AddToCarpoolButton";
-import CarpoolDropDownMenu from "./carpoolDropDownMenu";
+import CarpoolDropDownMenu from "./CarpoolDropDownMenu";
 import styles from '/styles/Home.module.css'
 interface props {
     pList: Competitor[];
