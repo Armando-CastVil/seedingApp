@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 
-export default async function getBracketData(phase:any)
+export default async function getBracketData(phase:any,apiKey:string)
 {
     //this variable is used to access pages beyond the first one for query results(eg. setsPage:2...etc.)
     var pageCounter=1
@@ -18,7 +18,7 @@ export default async function getBracketData(phase:any)
             if(pageCounter==1)
             {
                
-                await APICall(phaseGroup,pageCounter).then((value)=>
+                await APICall(phaseGroup,pageCounter,apiKey).then((value)=>
                 {
                     bracketData=value
                     
@@ -28,7 +28,7 @@ export default async function getBracketData(phase:any)
             else 
             {
                 //loop to fill up remaining seeds obtained from beyond page 1 of API call
-                await APICall(phaseGroup,pageCounter).then((value)=>
+                await APICall(phaseGroup,pageCounter,apiKey).then((value)=>
                 {
                     
                     if(value.phaseGroup.sets.nodes.length==0)
@@ -78,9 +78,9 @@ export default async function getBracketData(phase:any)
 }
     
 
-function APICall(phaseGroup:number,pageCounter:number)
+function APICall(phaseGroup:number,pageCounter:number,apiKey:string)
 {
- return axios.get('api/getBracketInfo',{params:{phaseGroup:phaseGroup,seedsPage:pageCounter,setsPage:pageCounter}}).then(({data})=>
+ return axios.get('api/getBracketInfo',{params:{phaseGroup:phaseGroup,seedsPage:pageCounter,setsPage:pageCounter,apiKey:apiKey}}).then(({data})=>
  {
      if(data.data.phaseGroup!=undefined)
      {

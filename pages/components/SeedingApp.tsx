@@ -28,7 +28,7 @@ export default function SeedingApp()
     const [selectedPlayer,setSelectedPlayer]=useState<Competitor>()
     const [selectedCarpool,setSelectedCarpool]=useState<Carpool>()
     const [apiData,setApiData]=useState<any>()
-    const [apiKey,setApiKey]=useState<string|undefined>()
+    const [apiKey,setApiKey]=useState<string|undefined>(getApiKey())
 
 
     //this function updates the selected carpool, it is passed down to the drop down list component
@@ -64,11 +64,12 @@ export default function SeedingApp()
     //function called by the submit button. Retrieves bracket data from smashgg
     const handleSubmit= async (event: { preventDefault: () => void; })  => {
         event.preventDefault();
-        await APICall(urlToSlug(url)!).then((value)=>
+        saveApiKey(apiKey);
+        await APICall(urlToSlug(url)!,apiKey!).then((value)=>
         {
             setApiData(value)
             console.log(value.data.event.phaseGroups[0].id)
-            getBracketData(value.data.event.phaseGroups[0].id).then((value)=>
+            getBracketData(value.data.event.phaseGroups[0].id,apiKey!).then((value)=>
         {
     
             setPlayerInfoFromPhase(value).then((value)=>
@@ -110,7 +111,6 @@ export default function SeedingApp()
                 {submitStatus?
                     <div className={styles.SeedingApp} >
                         <div className={styles.SeedingApp}>
-                        <SetAPI updateApiKey={updateApiKey}/>
                         <GenerateBracketButton playerList={playerList} updateBracket={updateBracket} />
                         <DisplayParticipantList pList={playerList} cList={carpoolList} updateSelectedCarpool={updateSelectedCarpool} addPlayerToCarpool={addPlayerToCarpool}/>
                         <CarpoolDisplay cList={carpoolList} pList={playerList} setPlayerFromButton={function (player: Competitor): void {
@@ -121,13 +121,21 @@ export default function SeedingApp()
                             <button className={styles.carpoolButton} onClick={e => { createCarpool(e) }}> create carpool</button> 
                         </div>
                     </div>
-                    :<form onSubmit={e => { handleSubmit(e) }}>
-                    <label>
-                     URL:
-                    <input type="text"  onChange={e => setURL(e.target.value)}/> 
-                    </label>
-                    <input type="submit" value="Submit"  />
-                    </form>
+                    :
+                    <>
+                        <form onSubmit={e => { handleSubmit(e) }}>
+                        <label>
+                        API key:
+                        <input type="password"  onChange={e => setApiKey(e.target.value)} defaultValue={getApiKey()}/> 
+                        </label>
+                        <br/>
+                        <label>
+                        URL:
+                        <input type="text"  onChange={e => setURL(e.target.value)}/> 
+                        </label>
+                        <input type="submit" value="Submit"  />
+                        </form>
+                    </>
                 }
             </div>
         
@@ -137,10 +145,24 @@ export default function SeedingApp()
 
 }
 
-function APICall(slug:string)
+function getApiKey() {
+    if (typeof window !== 'undefined') {
+        return localStorage.getItem("seedingAppApiKey") || "";
+    } else {
+        return "";
+    }
+}
+
+function saveApiKey(apiKey:string|undefined) {
+    if (typeof window !== 'undefined') {
+        localStorage.setItem("seedingAppApiKey",apiKey || "");
+    }
+}
+
+function APICall(slug:string,apiKey:string)
 {
     //API call
-    return axios.get('api/getPhaseGroups',{params:{slug:slug}}).then(({data})=>
+    return axios.get('api/getPhaseGroups',{params:{slug:slug,apiKey:apiKey}}).then(({data})=>
         {
             console.log("getting phaseGroups")
             console.log(data)

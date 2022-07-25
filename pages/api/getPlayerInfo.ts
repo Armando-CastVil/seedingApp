@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { request } from 'https';
 import type { NextApiRequest, NextApiResponse } from 'next'
-import {SMASHGG_API_URL, SMASHGG_API_KEY} from '../utility/config'
+import {SMASHGG_API_URL} from '../utility/config'
 
 type Data = {
   name: string
@@ -14,8 +14,9 @@ export default async function handler(
 ) 
 {
         const slug = req.query.slug as string
+        const apiKey = req.query.apiKey as string
         const page=req.query.page as unknown as number
-        const params={slug,page}
+        const params={slug,page,apiKey}
 
         const entrants = await getEntrants(params)
         
@@ -24,7 +25,8 @@ export default async function handler(
 interface GetEntrants
 {
 slug:string,
-page:number
+page:number,
+apiKey:string
 }
 
 
@@ -71,7 +73,7 @@ export const getEntrants = async (params: GetEntrants) => {
             responseType: 'json',
             headers: {
                 'Content-type': 'application/json',
-                'Authorization': `Bearer ${SMASHGG_API_KEY}`
+                'Authorization': `Bearer ${params.apiKey}`
             }
         })
         return res.data;

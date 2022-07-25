@@ -5,7 +5,7 @@ import getAllSeedingInfo from '../modules/getAllSeedingInfo';
 import useWindowSize from '../Hooks/useWindow';
 
 
-export default function Bracket() {
+export default function Bracket(apiKey:string) {
     const [bracketData,setBracketData]=useState<any>();
     const [submitStatus,setSubmitStatus]=useState(false);
     const [matchList,setMatchList]=useState<any>();
@@ -19,7 +19,7 @@ export default function Bracket() {
             setMatchList(value)
         }))*/
         
-        getBracketData(1).then((value)=>
+        getBracketData(1,apiKey).then((value)=>
         {
             setBracketData(value)
             //generateBracketPaths(value)

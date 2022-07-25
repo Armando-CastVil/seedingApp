@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { request } from 'https';
 import type { NextApiRequest, NextApiResponse } from 'next'
-import {SMASHGG_API_URL, SMASHGG_API_KEY} from '../utility/config'
+import {SMASHGG_API_URL} from '../utility/config'
 
 export default async function handler(
   req: NextApiRequest,
@@ -10,7 +10,8 @@ export default async function handler(
 {
         const phaseId = req.query.phaseId as unknown as number;
         const seedMapping = req.query.seedMapping as unknown as [UpdatePhaseSeedInfo];
-        const params={phaseId,seedMapping}
+        const apiKey = req.query.apiKey as string;
+        const params={phaseId,seedMapping,apiKey}
 
         await mutateSeeding(params)
         
@@ -19,7 +20,8 @@ export default async function handler(
 interface MutateSeeding
 {
     phaseId: number,
-    seedMapping: [UpdatePhaseSeedInfo]
+    seedMapping: [UpdatePhaseSeedInfo],
+    apiKey: string
 }
 export type UpdatePhaseSeedInfo = {
     seedId: number,
@@ -46,7 +48,7 @@ export const mutateSeeding = async (params: MutateSeeding) => {
             responseType: 'json',
             headers: {
                 'Content-type': 'application/json',
-                'Authorization': `Bearer ${SMASHGG_API_KEY}`
+                'Authorization': `Bearer ${params.apiKey}`
             }
         })
         return res.data;
