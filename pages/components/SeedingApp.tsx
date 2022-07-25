@@ -37,10 +37,10 @@ export default function SeedingApp()
     setSelectedCarpool(carpool)
     }
 
-    //this function updates the API key, it is passed down to the setapi component
+   /* //this function updates the API key, it is passed down to the setapi component
     const updateApiKey = (apiKey: string):void => {
         setApiKey(apiKey)
-    }
+    }*/
 
     //this function adds a player to a carpool and sets its carpool property to the selected carpool
     const addPlayerToCarpool=(player:Competitor):void=>
@@ -56,6 +56,8 @@ export default function SeedingApp()
     //to do
     const updateBracket=(playerList:Competitor[]):void=>
     {
+        console.log("api data when update bracket is called")
+        console.log(apiData)
         setPlayerList(assignBracketIds(apiData,playerList))    
     }
     
@@ -67,11 +69,13 @@ export default function SeedingApp()
         saveApiKey(apiKey);
         await APICall(urlToSlug(url)!,apiKey!).then((value)=>
         {
-            setApiData(value)
             console.log(value.data.event.phaseGroups[0].id)
             getBracketData(value.data.event.phaseGroups[0].id,apiKey!).then((value)=>
         {
     
+            console.log("api data will be set to")
+            console.log(value)
+            setApiData(value)
             setPlayerInfoFromPhase(value).then((value)=>
             {
                 setPlayerList(value)

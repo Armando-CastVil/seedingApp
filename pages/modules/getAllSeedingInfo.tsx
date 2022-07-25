@@ -85,7 +85,7 @@ export default async function getAllSeedingInfo(data:any)
     //playerList=setProjectedPath(matchList,playerList,bracketIDs)
     //console.log(playerList)
     //console.log(matchList)
-    return playerList
+    return {playerList,matchList}
     
 
 }
