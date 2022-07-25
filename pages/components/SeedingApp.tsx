@@ -12,6 +12,7 @@ import CarpoolDisplay from "./CarpoolDisplay";
 import GenerateBracketButton from "./UpdateBracketButton";
 import assignBracketIds from "../modules/assignBracketIds";
 import SetAPI from "./SetAPI";
+import pushSeeding from "../modules/pushSeeding";
 
 
 //seeding app is the top level component 
@@ -29,6 +30,7 @@ export default function SeedingApp()
     const [selectedCarpool,setSelectedCarpool]=useState<Carpool>()
     const [apiData,setApiData]=useState<any>()
     const [apiKey,setApiKey]=useState<string|undefined>(getApiKey())
+    const [errors,setErrors]=useState();
 
 
     //this function updates the selected carpool, it is passed down to the drop down list component
@@ -70,18 +72,21 @@ export default function SeedingApp()
             setApiData(value)
             console.log(value.data.event.phaseGroups[0].id)
             getBracketData(value.data.event.phaseGroups[0].id,apiKey!).then((value)=>
-        {
-    
-            setPlayerInfoFromPhase(value).then((value)=>
             {
-                setPlayerList(value)
+                let phaseID = value.phaseGroup.phase.id;
+                setPlayerInfoFromPhase(value).then(async (value)=>
+                {
+                    console.log(value.length+" players");
+                    setPlayerList(value)
+                    let errors = await pushSeeding(value,phaseID,apiKey!);
+                    console.log(errors === undefined);
+                    console.log(errors);
+                    setErrors(errors);
+                    setSubmitStatus(true);
+                })
+                
             })
-            
-            
-        })
-            setSubmitStatus(true)
         })    
-        
     }
 
     //function passed called by the create carpool button
@@ -104,23 +109,27 @@ export default function SeedingApp()
     
 
       
+                    // <div className={styles.SeedingApp} >
+                    //     <div className={styles.SeedingApp}>
+                    //     <GenerateBracketButton playerList={playerList} updateBracket={updateBracket} />
+                    //     <DisplayParticipantList pList={playerList} cList={carpoolList} updateSelectedCarpool={updateSelectedCarpool} addPlayerToCarpool={addPlayerToCarpool}/>
+                    //     <CarpoolDisplay cList={carpoolList} pList={playerList} setPlayerFromButton={function (player: Competitor): void {
+                        
+                    //     } }/>
+                    //     </div>
+                    //     <div className={styles.carpoolButton}>
+                    //         <button className={styles.carpoolButton} onClick={e => { createCarpool(e) }}> create carpool</button> 
+                    //     </div>
+                    // </div>
     
     //return statement
     return(
             <div className={styles.SeedingApp}>
                 {submitStatus?
-                    <div className={styles.SeedingApp} >
-                        <div className={styles.SeedingApp}>
-                        <GenerateBracketButton playerList={playerList} updateBracket={updateBracket} />
-                        <DisplayParticipantList pList={playerList} cList={carpoolList} updateSelectedCarpool={updateSelectedCarpool} addPlayerToCarpool={addPlayerToCarpool}/>
-                        <CarpoolDisplay cList={carpoolList} pList={playerList} setPlayerFromButton={function (player: Competitor): void {
-                        
-                        } }/>
-                        </div>
-                        <div className={styles.carpoolButton}>
-                            <button className={styles.carpoolButton} onClick={e => { createCarpool(e) }}> create carpool</button> 
-                        </div>
-                    </div>
+                    errors === undefined?
+                        <h1>Tournament seeded!</h1>
+                        :
+                        <h1>Tournament seeding failed: {errors}</h1>
                     :
                     <>
                         <form onSubmit={e => { handleSubmit(e) }}>

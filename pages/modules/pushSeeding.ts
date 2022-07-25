@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { UpdatePhaseSeedInfo } from '../api/mutateSeeding';
+import { mutateSeeding, UpdatePhaseSeedInfo } from '../api/mutateSeeding';
 import Competitor from './Competitor';
 
 export default async function pushSeeding(competitorSeeding:Competitor[], phaseId: number, apiKey: string)
@@ -8,20 +8,23 @@ export default async function pushSeeding(competitorSeeding:Competitor[], phaseI
     for(let i = 0; i<competitorSeeding.length; i++) {
         seedMapping.push({
             seedNum:i+1,
-            seedId: competitorSeeding[i].entrantID
+            seedId: competitorSeeding[i].seedID
         })
     }
-    APICall(phaseId, seedMapping, apiKey);
+    let errors = await APICall(phaseId, seedMapping, apiKey);
+    console.log(errors);
+    return errors;
  }
     
 
-function APICall(phaseId: number, seedMapping: UpdatePhaseSeedInfo[], apiKey: string)
+async function APICall(phaseId: number, seedMapping: UpdatePhaseSeedInfo[], apiKey: string)
 {
     //API call
-    return axios.get('api/mutateSeeding',{params:{phaseId: phaseId, seedMapping: seedMapping, apiKey: apiKey}}).then(({data})=>
-        {
-            console.log("mutating seeding")
-            console.log(data.data)
-        }
-    )
+    // return axios.get('api/mutateSeeding',{params:{phaseId: phaseId, seedMapping: seedMapping, apiKey: apiKey}}).then(({data})=>
+    //     {
+    //         console.log("mutating seeding")
+    //         console.log(data.data)
+    //     }
+    // )
+    return (await mutateSeeding({phaseId:phaseId, seedMapping: seedMapping, apiKey: apiKey})).errors;
 }

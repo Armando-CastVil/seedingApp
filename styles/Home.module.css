@@ -6,27 +6,27 @@
 {
   border: 10px solid black;
   right: 90%;
-  background-color: fuchsia;
+  background-color: white;
   font-family: Papyrus;
 }
 .carpoolButton
 {
 position:fixed;
-color:red;
+color: black;
 top: 10%;
 right: 90%;
 }
 .CarpoolDisplay
 {
-  background-color: yellowgreen;
-  border: 10px solid blue;
+  background-color: white;
+  border: 10px solid black;
   font-family: Papyrus;
 }
 
 .seedingApp
 {
-  background-color: fuchsia;
-  color:aquamarine
+  background-color: white;
+  color:white;
   
 }
 .main {
@@ -37,7 +37,7 @@ right: 90%;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: aquamarine;
+  background-color: white;
 }
 
 .footer {

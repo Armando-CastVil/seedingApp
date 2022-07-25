@@ -46,6 +46,9 @@ export const getEntrants = async (params: GetEntrants) => {
                 page: $seedsPage
               }) {
                 nodes {
+                  entrant {
+                    id
+                  }
                   players {
                     id
                     gamerTag
@@ -84,8 +87,8 @@ export const getEntrants = async (params: GetEntrants) => {
             "phaseGroup":params.phaseGroup,
             "setsPage": params.setsPage,
             "seedsPage": params.seedsPage,
-            "setsPerPage": 200,
-            "seedsPerPage": 500
+            "setsPerPage": 177,
+            "seedsPerPage": 94
           
         }
     }

@@ -9,6 +9,7 @@ export async function setPlayerInfoFromPhase(data:any)
     var smashggID="";
     var bracketID=0
     var tag="";
+    var seedID=0;
 
     console.log("setplayerinfo from phase called with phase:")
     console.log(data)
@@ -22,9 +23,10 @@ export async function setPlayerInfoFromPhase(data:any)
         smashggID=data.phaseGroup.seeds.nodes[i].players[0].id
         tag=data.phaseGroup.seeds.nodes[i].players[0].gamerTag
         bracketID=0;
+        seedID=data.phaseGroup.seeds.nodes[i].id;
 
         //initialize a Competitor object and push it in to the array
-        let  entry= new Competitor(smashggID,bracketID,tag,0,0,"","",false)
+        let  entry= new Competitor(smashggID,bracketID,tag,0,0,"",undefined,false,seedID)
         playerList[i]=entry;
     }
 

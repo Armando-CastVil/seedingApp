@@ -5,7 +5,7 @@ export default class Competitor
 {
     smashggID: string;
     bracketID:number;
-    entrantID:number;
+    seedID:number;
     tag: string;
     rating: number;
     seed:number;
@@ -16,7 +16,7 @@ export default class Competitor
 
     
 
-    constructor(smashggID:string,bracketID:number,tag:string,rating:number,seed:number,region:string|undefined,carpool:Carpool|undefined,isWinner:boolean,entrantID:number) {
+    constructor(smashggID:string,bracketID:number,tag:string,rating:number,seed:number,region:string|undefined,carpool:Carpool|undefined,isWinner:boolean,seedID:number) {
       this.smashggID=smashggID;
       this.bracketID=bracketID;
       this.tag=tag;
@@ -25,7 +25,7 @@ export default class Competitor
       this.region=region;
       this.carpool=carpool
       this.isWinner=isWinner
-      this.entrantID=entrantID;
+      this.seedID=seedID;
     }
     setRating(newRating:number)
     {
