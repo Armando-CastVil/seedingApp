@@ -30,7 +30,7 @@ export default function SeedingApp()
     const [selectedCarpool,setSelectedCarpool]=useState<Carpool>()
     const [apiData,setApiData]=useState<any>()
     const [apiKey,setApiKey]=useState<string|undefined>(getApiKey())
-    const [errors,setErrors]=useState();
+    const [successStatus,setSuccessStatus]=useState(false);
 
 
     //this function updates the selected carpool, it is passed down to the drop down list component
@@ -67,26 +67,29 @@ export default function SeedingApp()
     const handleSubmit= async (event: { preventDefault: () => void; })  => {
         event.preventDefault();
         saveApiKey(apiKey);
-        await APICall(urlToSlug(url)!,apiKey!).then((value)=>
-        {
-            setApiData(value)
-            console.log(value.data.event.phaseGroups[0].id)
-            getBracketData(value.data.event.phaseGroups[0].id,apiKey!).then((value)=>
+        try {
+            await APICall(urlToSlug(url)!,apiKey!).then((value)=>
             {
-                let phaseID = value.phaseGroup.phase.id;
-                setPlayerInfoFromPhase(value).then(async (value)=>
+                setApiData(value)
+                console.log(value.data.event.phaseGroups[0].id)
+                getBracketData(value.data.event.phaseGroups[0].id,apiKey!).then((value)=>
                 {
-                    console.log(value.length+" players");
-                    setPlayerList(value)
-                    let errors = await pushSeeding(value,phaseID,apiKey!);
-                    console.log(errors === undefined);
-                    console.log(errors);
-                    setErrors(errors);
-                    setSubmitStatus(true);
+                    let phaseID = value.phaseGroup.phase.id;
+                    setPlayerInfoFromPhase(value).then(async (value)=>
+                    {
+                        console.log(value.length+" players");
+                        setPlayerList(value)
+                        let errors = await pushSeeding(value,phaseID,apiKey!);
+                        console.log(errors);
+                        setSuccessStatus(errors === undefined);
+                        setSubmitStatus(true);
+                    })
+                    
                 })
-                
-            })
-        })    
+            })    
+        } catch(e) {
+            setSubmitStatus(true);
+        }
     }
 
     //function passed called by the create carpool button
@@ -126,10 +129,10 @@ export default function SeedingApp()
     return(
             <div className={styles.SeedingApp}>
                 {submitStatus?
-                    errors === undefined?
+                    successStatus?
                         <h1>Tournament seeded!</h1>
                         :
-                        <h1>Tournament seeding failed: {errors}</h1>
+                        <h1>Tournament seeding failed</h1>
                     :
                     <>
                         <form onSubmit={e => { handleSubmit(e) }}>
