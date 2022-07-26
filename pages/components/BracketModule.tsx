@@ -1,54 +1,21 @@
 import { DoubleEliminationBracket, Match, SVGViewer } from '@g-loot/react-tournament-brackets';
 import React, { useState } from 'react';
 import getBracketData from '../modules/getBracketData';
-import getAllSeedingInfo from '../modules/getAllSeedingInfo';
 import useWindowSize from '../Hooks/useWindow';
+import seed from '../modules/seed';
 
 
-export default function Bracket(apiKey:string) {
-    const [bracketData,setBracketData]=useState<any>();
-    const [submitStatus,setSubmitStatus]=useState(false);
-    const [matchList,setMatchList]=useState<any>();
-
-
-    const handleSubmit=  async (event: { preventDefault: () => void; })  => {
-        event.preventDefault();    
-       /* getBracketData("").then((value:any)=>
-        setBracketData(value)).then(generateMatches(bracketData).then((value)=>
-        {
-            setMatchList(value)
-        }))*/
-        
-        getBracketData(1,apiKey).then((value)=>
-        {
-            setBracketData(value)
-            //generateBracketPaths(value)
-            console.log(value)
-            /*generateMatches(value).then((value)=>
-            {
-                setMatchList(value)
-                
-
-            })*/
-
-            getAllSeedingInfo(value).then((matches)=>
-            {
-                setMatchList(matches)
-            })
-            
-        })
-        
-        
-        setSubmitStatus(true)
-        
-        
-    }
-    
-  
+interface bracketprops
+{
+    bracketSubmitStatus:boolean;
+    matchList:any
+}
+export default function Bracket({bracketSubmitStatus,matchList}:bracketprops) {
+   
 
     return  (
         <div>
-        {submitStatus &&matchList!=undefined?
+        {bracketSubmitStatus &&matchList!=undefined?
           <DoubleEliminationBracket
           matches={matchList}
           matchComponent={Match}
@@ -58,7 +25,7 @@ export default function Bracket(apiKey:string) {
               </SVGViewer>
             )}
         />
-        :<button onClick={e => { handleSubmit(e) }}> GET DATA</button> 
+        :<h3>readying bracket...</h3>
         }
     </div>
     )

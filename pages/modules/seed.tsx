@@ -15,12 +15,10 @@ interface MatchStructure
 }
 
 //start of function
-export default async function getAllSeedingInfo(data:any)
+export default async function seed(data:any,playerList:Competitor[])
 {
     //initializing arrays
 
-    //playerList is an array of competitor objects
-    var playerList:Competitor[]=[]
     var setList:Match[]=[];
     var matchList:MatchStructure=
     {
@@ -36,18 +34,15 @@ export default async function getAllSeedingInfo(data:any)
     //this array holds only the sets that have results that have been set during a given round
     var setsWithResults:any=[]
 
-    //sets attributes for Competitor objects and stores them in the playerlist array
+  
     //also assigns their bracket ID to their corresponding index in the bracketID array
-    await setPlayerInfo(data).then((value: Competitor[])=>
-        {
-            playerList=value
-            for(let i=0;i<playerList.length;i++)
-            {
-                bracketIDs[i]=value[i].bracketID
-            }
+    for(let i=0;i<playerList.length;i++)
+    {
+        bracketIDs[i]=playerList[i].bracketID
+    }
 
             
-        })
+        
 
         
    
@@ -82,10 +77,8 @@ export default async function getAllSeedingInfo(data:any)
         
     })
     matchList=await errorElimination(matchList)
-    //playerList=setProjectedPath(matchList,playerList,bracketIDs)
-    //console.log(playerList)
-    //console.log(matchList)
-    return {playerList,matchList}
+   
+    return matchList
     
 
 }

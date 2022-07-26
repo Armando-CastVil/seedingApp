@@ -12,6 +12,16 @@ import CarpoolDisplay from "./CarpoolDisplay";
 import GenerateBracketButton from "./UpdateBracketButton";
 import assignBracketIds from "../modules/assignBracketIds";
 import SetAPI from "./SetAPI";
+import seed from "../modules/seed";
+import { Match } from "@g-loot/react-tournament-brackets/dist/src/types";
+import Bracket from "./BracketModule"
+import  DynamicBracketModule from "./DynamicBracket"
+//interface for the list of matches we will pass to the bracket display component
+interface MatchStructure
+{
+    upper:Match[],
+    lower:Match[]
+}
 
 
 //seeding app is the top level component 
@@ -28,7 +38,9 @@ export default function SeedingApp()
     const [selectedPlayer,setSelectedPlayer]=useState<Competitor>()
     const [selectedCarpool,setSelectedCarpool]=useState<Carpool>()
     const [apiData,setApiData]=useState<any>()
-    const [apiKey,setApiKey]=useState<string|undefined>(getApiKey())
+    const [apiKey,setApiKey]=useState<string|undefined>()
+    const [matchList,setMatchList]=useState<MatchStructure>()
+    const [BracketsubmitStatus,setBracketSubmitStatus]=useState(false);
 
 
     //this function updates the selected carpool, it is passed down to the drop down list component
@@ -59,6 +71,13 @@ export default function SeedingApp()
         console.log("api data when update bracket is called")
         console.log(apiData)
         setPlayerList(assignBracketIds(apiData,playerList))    
+        let tempMatchList;
+        seed(apiData, playerList).then((value)=>
+        {
+            tempMatchList=value
+        })
+        setMatchList(tempMatchList)
+        setBracketSubmitStatus(true)
     }
     
   
@@ -66,11 +85,10 @@ export default function SeedingApp()
     //function called by the submit button. Retrieves bracket data from smashgg
     const handleSubmit= async (event: { preventDefault: () => void; })  => {
         event.preventDefault();
-        saveApiKey(apiKey);
-        await APICall(urlToSlug(url)!,apiKey!).then((value)=>
+        await APICall(urlToSlug(url)!).then((value)=>
         {
             console.log(value.data.event.phaseGroups[0].id)
-            getBracketData(value.data.event.phaseGroups[0].id,apiKey!).then((value)=>
+            getBracketData(value.data.event.phaseGroups[0].id).then((value)=>
         {
     
             console.log("api data will be set to")
@@ -118,28 +136,20 @@ export default function SeedingApp()
                         <GenerateBracketButton playerList={playerList} updateBracket={updateBracket} />
                         <DisplayParticipantList pList={playerList} cList={carpoolList} updateSelectedCarpool={updateSelectedCarpool} addPlayerToCarpool={addPlayerToCarpool}/>
                         <CarpoolDisplay cList={carpoolList} pList={playerList} setPlayerFromButton={function (player: Competitor): void {
-                        
+                        <DynamicBracketModule bracketSubmitStatus={BracketsubmitStatus} matchList={matchList}/>
                         } }/>
                         </div>
                         <div className={styles.carpoolButton}>
                             <button className={styles.carpoolButton} onClick={e => { createCarpool(e) }}> create carpool</button> 
                         </div>
                     </div>
-                    :
-                    <>
-                        <form onSubmit={e => { handleSubmit(e) }}>
-                        <label>
-                        API key:
-                        <input type="password"  onChange={e => setApiKey(e.target.value)} defaultValue={getApiKey()}/> 
-                        </label>
-                        <br/>
-                        <label>
-                        URL:
-                        <input type="text"  onChange={e => setURL(e.target.value)}/> 
-                        </label>
-                        <input type="submit" value="Submit"  />
-                        </form>
-                    </>
+                    :<form onSubmit={e => { handleSubmit(e) }}>
+                    <label>
+                     URL:
+                    <input type="text"  onChange={e => setURL(e.target.value)}/> 
+                    </label>
+                    <input type="submit" value="Submit"  />
+                    </form>
                 }
             </div>
         
@@ -149,24 +159,10 @@ export default function SeedingApp()
 
 }
 
-function getApiKey() {
-    if (typeof window !== 'undefined') {
-        return localStorage.getItem("seedingAppApiKey") || "";
-    } else {
-        return "";
-    }
-}
-
-function saveApiKey(apiKey:string|undefined) {
-    if (typeof window !== 'undefined') {
-        localStorage.setItem("seedingAppApiKey",apiKey || "");
-    }
-}
-
-function APICall(slug:string,apiKey:string)
+function APICall(slug:string)
 {
     //API call
-    return axios.get('api/getPhaseGroups',{params:{slug:slug,apiKey:apiKey}}).then(({data})=>
+    return axios.get('api/getPhaseGroups',{params:{slug:slug}}).then(({data})=>
         {
             console.log("getting phaseGroups")
             console.log(data)
