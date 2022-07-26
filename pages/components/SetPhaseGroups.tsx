@@ -8,7 +8,7 @@ interface phaseProps {
 
 }
 
-export default function SetPhaseGroups(setPhase: (phase: any) => void)
+export default function SetPhaseGroups(setPhase: (phase: any) => void, apiKey:string)
 {
     const [url,setURL] = useState("placeholder");
     const [submitStatus,setSubmitStatus]=useState(false);
@@ -18,7 +18,7 @@ export default function SetPhaseGroups(setPhase: (phase: any) => void)
 
     const handleSubmit= (event: { preventDefault: () => void; })  => {
         event.preventDefault();
-        APICall(urlToSlug(url)!).then((value)=>
+        APICall(urlToSlug(url)!,apiKey).then((value)=>
         setPhaseGroup(value.data.event.phaseGroups[0].id))
         setSubmitStatus(true)
       
@@ -44,10 +44,10 @@ export default function SetPhaseGroups(setPhase: (phase: any) => void)
   )
 }
 
-function APICall(slug:string)
+function APICall(slug:string,apiKey:string)
 {
     //API call
-    return axios.get('api/getPhaseGroups',{params:{slug:slug}}).then(({data})=>
+    return axios.get('api/getPhaseGroups',{params:{slug:slug,apiKey:apiKey}}).then(({data})=>
         {
             console.log("getting phaseGroups")
             return data

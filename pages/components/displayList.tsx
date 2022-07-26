@@ -29,7 +29,7 @@ export default class DisplayList extends React.Component<DisplayListState, { }>
                 this.props.list.map((e:Competitor)=>
                 <>
                 <div key={e.tag}>
-                    <h3>ID: {e.ID}</h3>
+                    <h3>ID: {e.smashggID}</h3>
                     <h3>Tag: {e.tag}</h3>
                     <h3>Rating: {e.rating.toFixed(2)}</h3>
                 </div>

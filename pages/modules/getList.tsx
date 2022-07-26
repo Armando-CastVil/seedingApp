@@ -2,10 +2,10 @@ import urlToSlug from "./urlToSlug";
 import getCompetitorInfo from "./getCompetitorInfo";
 import Competitor from "./Competitor";
 import { useState } from "react";
-export  default async function getList(slug:string)
+export  default async function getList(slug:string,apiKey:string)
 {
     console.log("getlist was called with url: "+ slug)
     var entryList: Competitor[]=[];
-    entryList=await getCompetitorInfo(slug)
+    entryList=await getCompetitorInfo(slug,apiKey)
     return entryList
 }

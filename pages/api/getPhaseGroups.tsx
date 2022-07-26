@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { request } from 'https';
 import type { NextApiRequest, NextApiResponse } from 'next'
-import {SMASHGG_API_URL, SMASHGG_API_KEY} from '../utility/config'
+import {SMASHGG_API_URL} from '../utility/config'
 
 type Data = {
   name: string
@@ -14,8 +14,9 @@ export default async function handler(
 ) 
 {
         const slug = req.query.slug as string
+        const apiKey = req.query.apiKey as string
         
-        const params={slug}
+        const params={slug,apiKey}
 
         const entrants = await GetPhaseGroups(params)
         
@@ -23,7 +24,8 @@ export default async function handler(
 }
 interface GetPhaseGroups
 {
-slug:string
+slug:string,
+apiKey:string
 }
 
 
@@ -57,7 +59,7 @@ export const GetPhaseGroups = async (params: GetPhaseGroups) => {
             responseType: 'json',
             headers: {
                 'Content-type': 'application/json',
-                'Authorization': `Bearer ${SMASHGG_API_KEY}`
+                'Authorization': `Bearer ${params.apiKey}`
             }
         })
         return res.data;

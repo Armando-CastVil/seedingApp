@@ -2,10 +2,9 @@ import Competitor from "./Competitor";
 import axios from 'axios';
 import { request } from 'https';
 import type { NextApiRequest, NextApiResponse } from 'next'
-import {SMASHGG_API_URL, SMASHGG_API_KEY} from '../utility/config'
 import urlToSlug from "./urlToSlug";
 
-export default async function getData(slug:string)
+export default async function getData(slug:string,apiKey:string)
 {
     
     console.log("getdata was called with slug:" + slug)
@@ -23,7 +22,7 @@ export default async function getData(slug:string)
              if(pageCounter==1)
              {
                 
-                 await APICall(pageCounter,slug).then((value)=>
+                 await APICall(pageCounter,slug,apiKey).then((value)=>
                  {
                      playerData=value
                      console.log("value:")
@@ -36,7 +35,7 @@ export default async function getData(slug:string)
              else 
              {
                  //loop to fill up remaining players obtained from beyond page 1 of API call
-                 await APICall(pageCounter,slug).then((value)=>
+                 await APICall(pageCounter,slug,apiKey).then((value)=>
                  {
                      
                      if(value.length==0)
@@ -71,10 +70,10 @@ export default async function getData(slug:string)
  }
     
 
-function APICall(page:number,slug:string)
+function APICall(page:number,slug:string,apiKey:string)
 {
     //API call
-    return axios.get('api/getPlayerInfo',{params:{slug:slug,page:page}}).then(({data})=>
+    return axios.get('api/getPlayerInfo',{params:{slug:slug,page:page,apiKey:apiKey}}).then(({data})=>
         {
             console.log("getting info")
             console.log(data.data.event.entrants.nodes)

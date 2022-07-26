@@ -5,20 +5,17 @@ import useWindowSize from '../Hooks/useWindow';
 import seed from '../modules/seed';
 
 
-export default function Bracket() {
-    const [bracketData,setBracketData]=useState<any>();
-    const [submitStatus,setSubmitStatus]=useState(false);
-    const [matchList,setMatchList]=useState<any>();
-
-
-    
-       
-    
-  
+interface bracketprops
+{
+    bracketSubmitStatus:boolean;
+    matchList:any
+}
+export default function Bracket({bracketSubmitStatus,matchList}:bracketprops) {
+   
 
     return  (
         <div>
-        {matchList!=undefined?
+        {bracketSubmitStatus &&matchList!=undefined?
           <DoubleEliminationBracket
           matches={matchList}
           matchComponent={Match}
@@ -28,7 +25,7 @@ export default function Bracket() {
               </SVGViewer>
             )}
         />
-        :<h3>loading...</h3> 
+        :<h3>readying bracket...</h3>
         }
     </div>
     )
