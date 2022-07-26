@@ -13,6 +13,7 @@ import GenerateBracketButton from "./UpdateBracketButton";
 import assignBracketIds from "../modules/assignBracketIds";
 import SetAPI from "./SetAPI";
 import pushSeeding from "../modules/pushSeeding";
+import verifyKeyAndURL, { OK } from "../modules/verifyKeyAndURL";
 
 
 //seeding app is the top level component 
@@ -30,7 +31,7 @@ export default function SeedingApp()
     const [selectedCarpool,setSelectedCarpool]=useState<Carpool>()
     const [apiData,setApiData]=useState<any>()
     const [apiKey,setApiKey]=useState<string|undefined>(getApiKey())
-    const [successStatus,setSuccessStatus]=useState(false);
+    const [successStatus,setSuccessStatus]=useState<string | undefined>();
 
 
     //this function updates the selected carpool, it is passed down to the drop down list component
@@ -67,7 +68,13 @@ export default function SeedingApp()
     const handleSubmit= async (event: { preventDefault: () => void; })  => {
         event.preventDefault();
         saveApiKey(apiKey);
+        setSubmitStatus(true);
         try {
+            let success = await verifyKeyAndURL(url,apiKey!);
+            if(success !== OK) {
+                setSuccessStatus(success);
+                return;
+            }
             await APICall(urlToSlug(url)!,apiKey!).then((value)=>
             {
                 setApiData(value)
@@ -81,13 +88,18 @@ export default function SeedingApp()
                         setPlayerList(value)
                         let errors = await pushSeeding(value,phaseID,apiKey!);
                         console.log(errors);
-                        setSuccessStatus(errors === undefined);
+                        if(errors === undefined) {
+                            setSuccessStatus(OK);
+                        } else {
+                            setSuccessStatus("unknown error");
+                        }
                         setSubmitStatus(true);
                     })
                     
                 })
             })    
         } catch(e) {
+            setSuccessStatus("unknown error");
             setSubmitStatus(true);
         }
     }
@@ -129,11 +141,20 @@ export default function SeedingApp()
     return(
             <div className={styles.SeedingApp}>
                 {submitStatus?
-                    successStatus?
-                        <h1>Tournament seeded!</h1>
+                    <>
+                        {successStatus === undefined?
+                            <>
+                                <h1>One Second...</h1>
+                            </>
+                            :
+                            <>
+                                {successStatus === OK?
+                                <h1>Tournament seeded!</h1>
+                                :
+                                <h1>Tournament seeding failed<br/>{successStatus}</h1>}
+                            </>}
+                    </>
                         :
-                        <h1>Tournament seeding failed</h1>
-                    :
                     <>
                         <form onSubmit={e => { handleSubmit(e) }}>
                         <label>
@@ -147,6 +168,7 @@ export default function SeedingApp()
                         </label>
                         <input type="submit" value="Submit"  />
                         </form>
+                        <h3>Warning! This will override the current seeding!</h3>
                     </>
                 }
             </div>
