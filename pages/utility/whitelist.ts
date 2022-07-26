@@ -1,6 +1,6 @@
 const whitelistedHashes = [
     "4fe851e918b4cd863608ac70d2a6529483f43e104392a2635afbb08b216bc214",
-    "07123e1f482356c415f684407a3b8723e10b2cbbc0b8fcd6282c49d37c9c1abc"
+    "eddef60d2143e015a188b449c253380b1d4589b3334622e967211023368d2b03",
 ]
 
 export async function isWhitelisted(key: string):Promise<boolean> {
@@ -10,7 +10,7 @@ export async function isWhitelisted(key: string):Promise<boolean> {
     return toReturn;
 }
 
-async function sha256(message:string):Promise<string> {
+export async function sha256(message:string):Promise<string> {
     // encode as UTF-8
     const msgBuffer = new TextEncoder().encode(message);                    
 
