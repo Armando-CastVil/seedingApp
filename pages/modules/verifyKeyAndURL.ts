@@ -5,7 +5,7 @@ import urlToSlug from "./urlToSlug"
 const INVALID_API_KEY = "This API key is not valid";
 const INVALID_URL = "This URL is not valid. It should be in the format: start.gg/tournament/[tournament name]/event/[event name]";
 const NOT_AN_ADMIN = "The owner of this API key is not an admin of the tournament";
-const NOT_WHITELITED = "This API key is not whitelisted. Please contact me thru discord(@Stephen Schu#0995) or twitter(@Stephen_Schu_) to whitelist your key and send me this key: ";
+const NOT_WHITELITED = "This API key is not whitelisted. Please contact me thru discord(@Stephen Schu#0995) or twitter(@Stephen_Schu_) to whitelist your key and send me this hashed API key: ";
 export const OK = "OK";
 
 //takes in the url and api key and returns empty string if they work and the reason they don't if they don't

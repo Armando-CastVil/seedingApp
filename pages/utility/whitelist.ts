@@ -1,6 +1,6 @@
 const whitelistedHashes = [
-    "4fe851e918b4cd863608ac70d2a6529483f43e104392a2635afbb08b216bc214",
-    "eddef60d2143e015a188b449c253380b1d4589b3334622e967211023368d2b03",
+    "4fe851e918b4cd863608ac70d2a6529483f43e104392a2635afbb08b216bc214", //DN
+    "eddef60d2143e015a188b449c253380b1d4589b3334622e967211023368d2b03", //AC
 ]
 
 export async function isWhitelisted(key: string):Promise<boolean> {
