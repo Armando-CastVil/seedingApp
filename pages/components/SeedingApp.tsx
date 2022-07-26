@@ -12,6 +12,16 @@ import CarpoolDisplay from "./CarpoolDisplay";
 import GenerateBracketButton from "./UpdateBracketButton";
 import assignBracketIds from "../modules/assignBracketIds";
 import SetAPI from "./SetAPI";
+import seed from "../modules/seed";
+import { Match } from "@g-loot/react-tournament-brackets/dist/src/types";
+import Bracket from "./BracketModule"
+import  DynamicBracketModule from "./DynamicBracket"
+//interface for the list of matches we will pass to the bracket display component
+interface MatchStructure
+{
+    upper:Match[],
+    lower:Match[]
+}
 
 
 //seeding app is the top level component 
@@ -29,6 +39,8 @@ export default function SeedingApp()
     const [selectedCarpool,setSelectedCarpool]=useState<Carpool>()
     const [apiData,setApiData]=useState<any>()
     const [apiKey,setApiKey]=useState<string|undefined>()
+    const [matchList,setMatchList]=useState<MatchStructure>()
+    const [BracketsubmitStatus,setBracketSubmitStatus]=useState(false);
 
 
     //this function updates the selected carpool, it is passed down to the drop down list component
@@ -59,6 +71,13 @@ export default function SeedingApp()
         console.log("api data when update bracket is called")
         console.log(apiData)
         setPlayerList(assignBracketIds(apiData,playerList))    
+        let tempMatchList;
+        seed(apiData, playerList).then((value)=>
+        {
+            tempMatchList=value
+        })
+        setMatchList(tempMatchList)
+        setBracketSubmitStatus(true)
     }
     
   
@@ -117,7 +136,7 @@ export default function SeedingApp()
                         <GenerateBracketButton playerList={playerList} updateBracket={updateBracket} />
                         <DisplayParticipantList pList={playerList} cList={carpoolList} updateSelectedCarpool={updateSelectedCarpool} addPlayerToCarpool={addPlayerToCarpool}/>
                         <CarpoolDisplay cList={carpoolList} pList={playerList} setPlayerFromButton={function (player: Competitor): void {
-                        
+                        <DynamicBracketModule bracketSubmitStatus={BracketsubmitStatus} matchList={matchList}/>
                         } }/>
                         </div>
                         <div className={styles.carpoolButton}>

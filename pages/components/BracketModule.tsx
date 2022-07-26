@@ -1,8 +1,8 @@
 import { DoubleEliminationBracket, Match, SVGViewer } from '@g-loot/react-tournament-brackets';
 import React, { useState } from 'react';
 import getBracketData from '../modules/getBracketData';
-import getAllSeedingInfo from '../modules/getAllSeedingInfo';
 import useWindowSize from '../Hooks/useWindow';
+import seed from '../modules/seed';
 
 
 export default function Bracket() {
@@ -11,44 +11,14 @@ export default function Bracket() {
     const [matchList,setMatchList]=useState<any>();
 
 
-    const handleSubmit=  async (event: { preventDefault: () => void; })  => {
-        event.preventDefault();    
-       /* getBracketData("").then((value:any)=>
-        setBracketData(value)).then(generateMatches(bracketData).then((value)=>
-        {
-            setMatchList(value)
-        }))*/
-        
-        getBracketData(1).then((value)=>
-        {
-            setBracketData(value)
-            //generateBracketPaths(value)
-            console.log(value)
-            /*generateMatches(value).then((value)=>
-            {
-                setMatchList(value)
-                
-
-            })*/
-
-            getAllSeedingInfo(value).then((matches)=>
-            {
-                setMatchList(matches)
-            })
-            
-        })
-        
-        
-        setSubmitStatus(true)
-        
-        
-    }
+    
+       
     
   
 
     return  (
         <div>
-        {submitStatus &&matchList!=undefined?
+        {matchList!=undefined?
           <DoubleEliminationBracket
           matches={matchList}
           matchComponent={Match}
@@ -58,7 +28,7 @@ export default function Bracket() {
               </SVGViewer>
             )}
         />
-        :<button onClick={e => { handleSubmit(e) }}> GET DATA</button> 
+        :<h3>loading...</h3> 
         }
     </div>
     )
