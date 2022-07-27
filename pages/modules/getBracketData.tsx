@@ -1,14 +1,16 @@
 import axios from 'axios';
-
-
+import {SMASHGG_API_KEY} from '../utility/config'
 export default async function getBracketData(phase:any,apiKey:string)
 {
+    console.log("api key in getbracketdata:")
+    console.log(apiKey)
     //this variable is used to access pages beyond the first one for query results(eg. setsPage:2...etc.)
     var pageCounter=1
     //this will hold all the data from the query results, including those from beyond page 1
     var bracketData:any
     var phaseGroup=phase
     var thereIsData=true
+    apiKey=SMASHGG_API_KEY;
    
     
     //API call
