@@ -39,7 +39,7 @@ export default function SeedingApp()
     const [selectedPlayer,setSelectedPlayer]=useState<Competitor>()
     const [selectedCarpool,setSelectedCarpool]=useState<Carpool>()
     const [apiData,setApiData]=useState<any>()
-    const [apiKey,setApiKey]=useState<string|undefined>()
+    const [apiKey,setApiKey]=useState<string|undefined>(getApiKey())
     const [matchList,setMatchList]=useState<MatchStructure>()
     const [BracketsubmitStatus,setBracketSubmitStatus]=useState(false);
 
@@ -90,6 +90,7 @@ export default function SeedingApp()
         event.preventDefault();
         console.log("api key:")
         console.log(apiKey)
+        saveApiKey(apiKey);
         await APICall(urlToSlug(url)!,apiKey!).then((value)=>
         {
             console.log(value.data.event.phaseGroups[0].id)
@@ -153,6 +154,11 @@ export default function SeedingApp()
                     <SetAPI updateApiKey={updateApiKey} />
                     <form onSubmit={e => { handleSubmit(e) }}>
                     <label>
+                        API key:
+                        <input type="password"  onChange={e => setApiKey(e.target.value)} defaultValue={getApiKey()}/> 
+                        </label>
+                        <br/>
+                    <label>
                      URL:
                     <input type="text"  onChange={e => setURL(e.target.value)}/> 
                     </label>
@@ -167,7 +173,19 @@ export default function SeedingApp()
    
 
 }
+function getApiKey() {
+    if (typeof window !== 'undefined') {
+        return localStorage.getItem("seedingAppApiKey") || "";
+    } else {
+        return "";
+    }
+}
 
+function saveApiKey(apiKey:string|undefined) {
+    if (typeof window !== 'undefined') {
+        localStorage.setItem("seedingAppApiKey",apiKey || "");
+    }
+}
 function APICall(slug:string,apiKey:string)
 {
     //API call
