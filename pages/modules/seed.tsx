@@ -78,6 +78,8 @@ export default async function seed(data:any,playerList:Competitor[])
     })
     matchList=await errorElimination(matchList)
    
+    console.log("returning matchlist")
+    console.log(matchList)
     return matchList
     
 

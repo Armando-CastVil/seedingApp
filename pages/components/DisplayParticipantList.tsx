@@ -2,7 +2,7 @@ import axios from "axios";
 import { SetStateAction, useEffect, useState } from "react";
 import Carpool from "../modules/Carpool";
 import Competitor from "../modules/Competitor";
-import getAllSeedingInfo from "../modules/getAllSeedingInfo";
+import getAllSeedingInfo from "../modules/seed";
 import getBracketData from "../modules/getBracketData";
 import { setPlayerInfoFromPhase } from "../modules/setPlayerInfoFromPhase";
 import urlToSlug from "../modules/urlToSlug";
@@ -33,12 +33,7 @@ export default function DisplayParticipantList({pList,cList,updateSelectedCarpoo
 
     const [carpool,setCarpool]=useState<Carpool>()
     const [player,setPlayer]=useState<Competitor>()
-    const handleCarpool= (event: { preventDefault: () => void; })  => {
-        carpool?.carpoolMembers.push(player!)
-      
-    }
-
-
+    
 
 
     return(
