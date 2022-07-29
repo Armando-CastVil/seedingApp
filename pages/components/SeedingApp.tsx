@@ -41,9 +41,9 @@ export default function SeedingApp()
     const [apiData,setApiData]=useState<any>()
     const [apiKey,setApiKey]=useState<string|undefined>(getApiKey())
     const [matchList,setMatchList]=useState<MatchStructure>()
-    const [BracketsubmitStatus,setBracketSubmitStatus]=useState(false);
+    const [bracketSubmitStatus,setBracketSubmitStatus]=useState(false);
 
-
+    
     //this function updates the selected carpool, it is passed down to the drop down list component
     const updateSelectedCarpool = (carpool: Carpool):void => {
     alert("selected carpool is:"+carpool.carpoolName)
@@ -69,18 +69,20 @@ export default function SeedingApp()
     }
     
     //to do
-    const updateBracket=(playerList:Competitor[]):void=>
+    const updateBracket=async (playerList:Competitor[])=>
     {
         console.log("api data when update bracket is called")
         console.log(apiData)
         setPlayerList(assignBracketIds(apiData,playerList))    
         let tempMatchList;
-        seed(apiData, playerList).then((value)=>
+        await seed(apiData, playerList).then((value)=>
         {
             tempMatchList=value
         })
         setMatchList(tempMatchList)
         setBracketSubmitStatus(true)
+        console.log("temp match list:")
+        console.log(tempMatchList)
     }
     
   
@@ -139,10 +141,12 @@ export default function SeedingApp()
                 {submitStatus?
                     <div className={styles.SeedingApp} >
                         <div className={styles.SeedingApp}>
+
                         <GenerateBracketButton playerList={playerList} updateBracket={updateBracket} />
+                        <DynamicBracketModule bracketSubmitStatus={bracketSubmitStatus} matchList={matchList}/>
                         <DisplayParticipantList pList={playerList} cList={carpoolList} updateSelectedCarpool={updateSelectedCarpool} addPlayerToCarpool={addPlayerToCarpool}/>
                         <CarpoolDisplay cList={carpoolList} pList={playerList} setPlayerFromButton={function (player: Competitor): void {
-                        <DynamicBracketModule bracketSubmitStatus={BracketsubmitStatus} matchList={matchList}/>
+                        
                         } }/>
                         </div>
                         <div className={styles.carpoolButton}>
@@ -151,7 +155,7 @@ export default function SeedingApp()
                     </div>
                     :
                     <div>
-                    <SetAPI updateApiKey={updateApiKey} />
+                
                     <form onSubmit={e => { handleSubmit(e) }}>
                     <label>
                         API key:

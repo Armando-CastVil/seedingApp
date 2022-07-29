@@ -9,8 +9,12 @@ interface MatchStructure
     lower:Match[]
 }
 
-
-export default function BracketDisplay()
+interface bracketprops
+{
+    bracketSubmitStatus:boolean;
+    matchList:any
+}
+export default function BracketDisplay({bracketSubmitStatus,matchList}:bracketprops)
 {
   
 
@@ -25,7 +29,7 @@ export default function BracketDisplay()
 
     
     return(
-     <DynamicComponentWithNoSSR/>
+     <DynamicComponentWithNoSSR bracketSubmitStatus={bracketSubmitStatus} matchList={matchList}  />
    )
 
 }

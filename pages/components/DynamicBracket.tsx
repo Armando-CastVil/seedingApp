@@ -2,9 +2,16 @@ import { DoubleEliminationBracket, Match, SVGViewer } from '@g-loot/react-tourna
 import dynamic from 'next/dynamic'
 import React, { useEffect, useState } from "react";
 import BracketDisplay from './BracketDisplay';
-export default function DynamicBracketModule()
+interface bracketprops
 {
-   
+    bracketSubmitStatus:boolean;
+    matchList:any
+}
+
+export default function DynamicBracketModule({bracketSubmitStatus,matchList}:bracketprops)
+{
+   console.log("dynamic bracket module matchlist:")
+   console.log(matchList)
 
     const DynamicComponentWithNoSSR = dynamic(
         () => import('./BracketDisplay')
@@ -16,7 +23,7 @@ export default function DynamicBracketModule()
         
         <div>
             <h3>dynamic module:</h3>
-            <DynamicComponentWithNoSSR/>
+            <DynamicComponentWithNoSSR bracketSubmitStatus={bracketSubmitStatus} matchList={matchList} />
         
         </div>
     )

@@ -15,14 +15,7 @@ export default function CarpoolDropDownMenu({cList,updateSelectedCarpool}:Carpoo
     },[carpool])
     
     
-    let selectCarpool = (c:any) => {
-        setCarpool(c.target.value)
-        updateSelectedCarpool(cList[0])
-        alert(c.carpoolName)
-        console.log("c is:")
-        console.log(c.target.value)
-    }
-
+    
     const handleChange = (event: { target: { value: SetStateAction<string>; }; }) => {
         setValue(event.target.value);
         const tempCarpool = cList.find((obj) => {
