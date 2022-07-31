@@ -16,6 +16,8 @@ import seed from "../modules/seed";
 import { Match } from "@g-loot/react-tournament-brackets/dist/src/types";
 import Bracket from "./BracketModule"
 import  DynamicBracketModule from "./DynamicBracket"
+import getSeparation from "../modules/getSeparation";
+import setProjectedPath from "../modules/setProjectedPath";
 
 //interface for the list of matches we will pass to the bracket display component
 interface MatchStructure
@@ -57,6 +59,7 @@ export default function SeedingApp()
         console.log(apiKey)
     }
 
+   
     //this function adds a player to a carpool and sets its carpool property to the selected carpool
     const addPlayerToCarpool=(player:Competitor):void=>
     {
@@ -83,6 +86,12 @@ export default function SeedingApp()
         setBracketSubmitStatus(true)
         console.log("temp match list:")
         console.log(tempMatchList)
+
+        //set projected path
+        setProjectedPath(matchList,playerList)
+        //call separation function
+        getSeparation(playerList,carpoolList)
+
     }
     
   
