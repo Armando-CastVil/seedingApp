@@ -18,6 +18,7 @@ import Bracket from "./BracketModule"
 import  DynamicBracketModule from "./DynamicBracket"
 import getSeparation from "../modules/getSeparation";
 import setProjectedPath from "../modules/setProjectedPath";
+import getMatchList from "../modules/getMatchList/getMatchList";
 
 //interface for the list of matches we will pass to the bracket display component
 interface MatchStructure
@@ -55,8 +56,6 @@ export default function SeedingApp()
    //this function updates the API key, it is passed down to the setapi component
     const updateApiKey = (apiKey: string):void => {
         setApiKey(apiKey)
-        console.log("api key is:")
-        console.log(apiKey)
     }
 
    
@@ -74,23 +73,13 @@ export default function SeedingApp()
     //to do
     const updateBracket=async (playerList:Competitor[])=>
     {
-        console.log("api data when update bracket is called")
-        console.log(apiData)
         setPlayerList(assignBracketIds(apiData,playerList))    
-        let tempMatchList;
-        await seed(apiData, playerList).then((value)=>
-        {
-            tempMatchList=value
-        })
+        let tempMatchList=getMatchList(apiData,playerList)
         setMatchList(tempMatchList)
         setBracketSubmitStatus(true)
         console.log("temp match list:")
         console.log(tempMatchList)
 
-        //set projected path
-        setProjectedPath(matchList,playerList)
-        //call separation function
-        getSeparation(playerList,carpoolList)
 
     }
     
@@ -202,8 +191,6 @@ function saveApiKey(apiKey:string|undefined) {
 function APICall(slug:string,apiKey:string)
 {
     //API call
-    console.log("api call with key:")
-    console.log(apiKey)
     return axios.get('api/getPhaseGroups',{params:{slug:slug,apiKey:apiKey}}).then(({data})=>
         {
             console.log("getting phaseGroups")
